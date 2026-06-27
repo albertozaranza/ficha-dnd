@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ficha D&D 5e — Skritch Cauda-de-Ferro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Tailwind dark mode via class */
+    .dark-mode-target { }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  TOOLBAR                                                  -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="toolbar">
+  <span style="color:#c87020;font-family:'Cinzel',serif;font-size:16px;font-weight:700;letter-spacing:0.05em;margin-right:8px;">D&amp;D 5e</span>
+
+  <button class="tab-btn active" data-page="page1">⚔ Ficha</button>
+  <button class="tab-btn" data-page="page2">👤 Personagem</button>
+  <button class="tab-btn" data-page="page3">✦ Magias</button>
+
+  <div style="width:1px;height:28px;background:#3a3020;margin:0 4px;"></div>
+
+  <button class="tool-btn" id="btn-save">💾 Salvar</button>
+  <button class="tool-btn" id="btn-export">↑ Exportar</button>
+  <button class="tool-btn" id="btn-import">↓ Importar</button>
+  <button class="tool-btn" id="btn-print">🖨 Imprimir</button>
+  <button class="tool-btn danger" id="btn-reset">↺ Resetar</button>
+  <button class="tool-btn" id="btn-dark">☾ Escuro</button>
+
+  <input type="file" id="import-file" accept=".json" style="display:none">
+  <span id="save-indicator">✓ Salvo</span>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  PAGE 1 — FICHA PRINCIPAL                                 -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="page1" class="page sheet-paper">
+
+  <!-- HEADER -->
+  <div style="margin-bottom:10px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;border-bottom:2px solid var(--border);padding-bottom:6px;">
+      <div class="dnd-logo">DUNGEONS &amp; DRAGONS®</div>
+      <input id="char-name" class="char-name-display" placeholder="Nome do Personagem" style="flex:1">
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr) repeat(3,1fr);gap:6px 16px;align-items:end;">
+      <div class="meta-field">
+        <input id="char-class" class="editable-field" placeholder="Classe e Nível">
+        <div class="section-label">CLASSE E NÍVEL</div>
+      </div>
+      <div class="meta-field">
+        <input id="char-bg" class="editable-field" placeholder="Antecedente">
+        <div class="section-label">ANTECEDENTE</div>
+      </div>
+      <div class="meta-field">
+        <input id="char-player" class="editable-field" placeholder="Nome do Jogador">
+        <div class="section-label">NOME DO JOGADOR</div>
+      </div>
+      <div class="meta-field">
+        <input id="char-race" class="editable-field" placeholder="Raça">
+        <div class="section-label">RAÇA</div>
+      </div>
+      <div class="meta-field">
+        <input id="char-align" class="editable-field" placeholder="Tendência">
+        <div class="section-label">TENDÊNCIA</div>
+      </div>
+      <div class="meta-field">
+        <input id="char-xp" class="editable-field" placeholder="0" type="number" min="0">
+        <div class="section-label">PONTOS DE EXPERIÊNCIA</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID: 4 cols -->
+  <div style="display:grid;grid-template-columns:96px 152px 1fr 200px;gap:10px;align-items:start;">
+
+    <!-- ── COL 1: ATTRIBUTES ── -->
+    <div style="display:flex;flex-direction:column;gap:5px;">
+      <!-- Attribute blocks -->
+      <div id="attr-str" class="attr-block">
+        <div class="attr-name">FORÇA</div>
+        <input id="attr-score-str" class="attr-score" type="number" min="1" max="30">
+        <div class="attr-mod" id="attr-mod-str">+0</div>
+      </div>
+      <div id="attr-dex" class="attr-block">
+        <div class="attr-name">DESTREZA</div>
+        <input id="attr-score-dex" class="attr-score" type="number" min="1" max="30">
+        <div class="attr-mod" id="attr-mod-dex">+0</div>
+      </div>
+      <div id="attr-con" class="attr-block">
+        <div class="attr-name">CONSTITUIÇÃO</div>
+        <input id="attr-score-con" class="attr-score" type="number" min="1" max="30">
+        <div class="attr-mod" id="attr-mod-con">+0</div>
+      </div>
+      <div id="attr-int" class="attr-block">
+        <div class="attr-name">INTELIGÊNCIA</div>
+        <input id="attr-score-int" class="attr-score" type="number" min="1" max="30">
+        <div class="attr-mod" id="attr-mod-int">+0</div>
+      </div>
+      <div id="attr-wis" class="attr-block">
+        <div class="attr-name">SABEDORIA</div>
+        <input id="attr-score-wis" class="attr-score" type="number" min="1" max="30">
+        <div class="attr-mod" id="attr-mod-wis">+0</div>
+      </div>
+      <div id="attr-cha" class="attr-block">
+        <div class="attr-name">CARISMA</div>
+        <input id="attr-score-cha" class="attr-score" type="number" min="1" max="30">
+        <div class="attr-mod" id="attr-mod-cha">+0</div>
+      </div>
+    </div>
+
+    <!-- ── COL 2: INSPIRATION / PROF / SAVES / SKILLS ── -->
+    <div style="display:flex;flex-direction:column;gap:5px;">
+
+      <!-- Inspiration -->
+      <div class="sheet-box" style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;padding-bottom:16px;">
+        <div id="inspiration-box" class="inspiration-box" title="Clique para alternar Inspiração"></div>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">INSPIRAÇÃO</div>
+      </div>
+
+      <!-- Proficiency Bonus -->
+      <div class="sheet-box" style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;padding-bottom:16px;position:relative;">
+        <div id="prof-bonus" style="font-family:'Cinzel',serif;font-size:22px;font-weight:700;color:var(--ink);">+2</div>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">BÔNUS DE PROFICIÊNCIA</div>
+      </div>
+
+      <!-- Saving Throws -->
+      <div class="sheet-box" style="padding-bottom:18px;position:relative;">
+        <div id="save-row-str" class="skill-row">
+          <div class="prof-indicator"></div>
+          <span class="skill-bonus">+0</span>
+          <span class="skill-name">Força</span>
+        </div>
+        <div id="save-row-dex" class="skill-row">
+          <div class="prof-indicator"></div>
+          <span class="skill-bonus">+0</span>
+          <span class="skill-name">Destreza</span>
+        </div>
+        <div id="save-row-con" class="skill-row">
+          <div class="prof-indicator"></div>
+          <span class="skill-bonus">+0</span>
+          <span class="skill-name">Constituição</span>
+        </div>
+        <div id="save-row-int" class="skill-row">
+          <div class="prof-indicator"></div>
+          <span class="skill-bonus">+0</span>
+          <span class="skill-name">Inteligência</span>
+        </div>
+        <div id="save-row-wis" class="skill-row">
+          <div class="prof-indicator"></div>
+          <span class="skill-bonus">+0</span>
+          <span class="skill-name">Sabedoria</span>
+        </div>
+        <div id="save-row-cha" class="skill-row">
+          <div class="prof-indicator"></div>
+          <span class="skill-bonus">+0</span>
+          <span class="skill-name">Carisma</span>
+        </div>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">TESTES DE RESISTÊNCIA</div>
+      </div>
+
+      <!-- Skills -->
+      <div class="sheet-box" style="padding-bottom:18px;position:relative;">
+        <div style="font-size:11px;color:var(--border-light);font-style:italic;margin-bottom:3px;">● profic. ◉ expertise ○ sem</div>
+        <div id="skill-row-acrobatics" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Acrobacia (Des)</span></div>
+        <div id="skill-row-arcana" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Arcanismo (Int)</span></div>
+        <div id="skill-row-athletics" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Atletismo (For)</span></div>
+        <div id="skill-row-performance" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Atuação (Car)</span></div>
+        <div id="skill-row-deception" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Blefar (Car)</span></div>
+        <div id="skill-row-stealth" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Furtividade (Des)</span></div>
+        <div id="skill-row-history" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">História (Int)</span></div>
+        <div id="skill-row-intimidation" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Intimidação (Car)</span></div>
+        <div id="skill-row-insight" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Intuição (Sab)</span></div>
+        <div id="skill-row-investigation" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Investigação (Int)</span></div>
+        <div id="skill-row-animalHandling" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Lidar c/ Animais (Sab)</span></div>
+        <div id="skill-row-medicine" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Medicina (Sab)</span></div>
+        <div id="skill-row-nature" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Natureza (Int)</span></div>
+        <div id="skill-row-perception" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Percepção (Sab)</span></div>
+        <div id="skill-row-persuasion" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Persuasão (Car)</span></div>
+        <div id="skill-row-sleightOfHand" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Prestidigitação (Des)</span></div>
+        <div id="skill-row-religion" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Religião (Int)</span></div>
+        <div id="skill-row-survival" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Sobrevivência (Sab)</span></div>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">PERÍCIAS</div>
+      </div>
+    </div>
+
+    <!-- ── COL 3: COMBAT / HP / ATTACKS / EQUIPMENT ── -->
+    <div style="display:flex;flex-direction:column;gap:6px;">
+
+      <!-- Combat Stats Row -->
+      <div style="display:flex;gap:6px;">
+        <div class="combat-stat" style="position:relative;padding-bottom:18px;">
+          <input id="combat-ac" class="combat-stat-value" type="number" min="0" max="30">
+          <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">CLASSE ARMD.</div>
+        </div>
+        <div class="combat-stat" style="position:relative;padding-bottom:18px;min-width:60px;">
+          <div id="combat-ini" class="combat-stat-value" style="display:flex;align-items:center;justify-content:center;height:32px;">+0</div>
+          <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">INICIATIVA</div>
+        </div>
+        <div class="combat-stat" style="position:relative;padding-bottom:18px;">
+          <input id="combat-spd" class="combat-stat-value" style="font-size:22px;" placeholder="9m">
+          <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">DESLOC.</div>
+        </div>
+      </div>
+
+      <!-- HP Max -->
+      <div class="sheet-box" style="padding:4px 8px;">
+        <div style="font-size:12px;color:var(--border-light);font-style:italic;">PV Totais</div>
+        <input id="hp-max" type="number" min="0" style="background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--ink);width:70px;">
+      </div>
+
+      <!-- HP Current -->
+      <div class="hp-box" style="padding-bottom:18px;position:relative;">
+        <input id="hp-current" class="hp-current" type="number" min="0" placeholder="0">
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">PONTOS DE VIDA ATUAIS</div>
+      </div>
+
+      <!-- HP Temp -->
+      <div class="hp-box" style="padding-bottom:18px;position:relative;">
+        <input id="hp-temp" class="hp-current" type="number" min="0" placeholder="—" style="font-size:24px;">
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">PONTOS DE VIDA TEMPORÁRIOS</div>
+      </div>
+
+      <!-- Hit Dice / Death Saves -->
+      <div style="display:flex;gap:6px;">
+        <div class="hit-dice-box" style="flex:1;padding-bottom:18px;position:relative;">
+          <div style="font-size:12px;color:var(--border-light);margin-bottom:2px;">Total</div>
+          <input id="hit-dice-rem" style="background:transparent;border:none;outline:none;font-family:'Cinzel',serif;font-size:24px;font-weight:700;color:var(--ink);width:80px;" placeholder="1d8">
+          <div style="font-size:11px;color:var(--border-light);margin-top:2px;">Restantes: <input id="hit-dice-total" style="background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:inherit;font-size:11px;color:var(--ink);width:36px;" placeholder="1d8"></div>
+          <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">DADOS DE VIDA</div>
+        </div>
+        <div class="sheet-box" style="flex:1;padding-bottom:18px;position:relative;">
+          <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;">
+            <span style="font-size:12px;color:var(--ink);">Sucessos</span>
+            <span class="death-pip success"></span>
+            <span class="death-pip success"></span>
+            <span class="death-pip success"></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span style="font-size:12px;color:var(--ink);">Fracassos</span>
+            <span class="death-pip fail"></span>
+            <span class="death-pip fail"></span>
+            <span class="death-pip fail"></span>
+          </div>
+          <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">TESTES CONTRA A MORTE</div>
+        </div>
+      </div>
+
+      <!-- Attacks -->
+      <div class="sheet-box" style="padding-bottom:18px;position:relative;">
+        <table class="attacks-table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Bônus</th>
+              <th>Dano / Tipo</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="attacks-tbody"></tbody>
+        </table>
+        <button id="add-attack" style="font-size:12px;color:var(--border-light);background:transparent;border:1px dashed var(--border-light);border-radius:3px;padding:1px 6px;cursor:pointer;margin-top:3px;">+ ataque</button>
+        <textarea id="attack-notes" class="editable-area" style="min-height:40px;margin-top:4px;font-size:12px;" placeholder="Notas sobre ataques..."></textarea>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">ATAQUES E MAGIAS</div>
+      </div>
+
+      <!-- Equipment -->
+      <div class="sheet-box" style="padding-bottom:18px;position:relative;">
+        <!-- Money -->
+        <div class="money-grid" style="margin-bottom:6px;">
+          <div class="money-cell"><input id="money-cp" type="number" min="0" placeholder="0"><div class="section-label">PC</div></div>
+          <div class="money-cell"><input id="money-sp" type="number" min="0" placeholder="0"><div class="section-label">PP</div></div>
+          <div class="money-cell"><input id="money-ep" type="number" min="0" placeholder="0"><div class="section-label">PE</div></div>
+          <div class="money-cell"><input id="money-gp" type="number" min="0" placeholder="0"><div class="section-label">PO</div></div>
+          <div class="money-cell"><input id="money-pp" type="number" min="0" placeholder="0"><div class="section-label">PL</div></div>
+        </div>
+        <ul id="equipment-list" class="equipment-list"></ul>
+        <button id="add-equipment" style="font-size:12px;color:var(--border-light);background:transparent;border:1px dashed var(--border-light);border-radius:3px;padding:1px 6px;cursor:pointer;margin-top:3px;">+ item</button>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">EQUIPAMENTO</div>
+      </div>
+    </div>
+
+    <!-- ── COL 4: PERSONALITY / IDEALS / BONDS / FLAWS / FEATURES ── -->
+    <div style="display:flex;flex-direction:column;gap:5px;">
+      <div class="trait-box" style="position:relative;padding-bottom:18px;">
+        <textarea id="traits-text" class="editable-area" style="min-height:55px;" placeholder="Traços de personalidade..."></textarea>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">TRAÇOS DE PERSONALIDADE</div>
+      </div>
+      <div class="trait-box" style="position:relative;padding-bottom:18px;">
+        <textarea id="ideals-text" class="editable-area" style="min-height:50px;" placeholder="Ideais..."></textarea>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">IDEAIS</div>
+      </div>
+      <div class="trait-box" style="position:relative;padding-bottom:18px;">
+        <textarea id="bonds-text" class="editable-area" style="min-height:50px;" placeholder="Ligações..."></textarea>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">LIGAÇÕES</div>
+      </div>
+      <div class="trait-box" style="position:relative;padding-bottom:18px;">
+        <textarea id="flaws-text" class="editable-area" style="min-height:50px;" placeholder="Defeitos..."></textarea>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">DEFEITOS</div>
+      </div>
+
+      <!-- Racial/Class Features preview (compact) -->
+      <div class="sheet-box" style="padding-bottom:18px;position:relative;flex:1;">
+        <div id="features-p1" style="overflow-y:auto;max-height:220px;">
+          <!-- filled by JS from char.features for first 2 features -->
+        </div>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">CARACTERÍSTICAS E HABILIDADES</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:6px;border-top:2px solid var(--border);">
+    <div class="passive-box" id="passive-perception">14</div>
+    <div style="font-size:12px;color:var(--ink);font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:0.05em;">SABEDORIA PASSIVA (PERCEPÇÃO)</div>
+
+    <div style="flex:1;"></div>
+
+    <div class="sheet-box" style="flex:2;padding-bottom:18px;position:relative;min-height:70px;">
+      <textarea id="langs-prof-text" class="editable-area" style="min-height:54px;font-size:12px;"></textarea>
+      <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">IDIOMAS E OUTRAS PROFICIÊNCIAS</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  PAGE 2 — PERSONAGEM                                      -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="page2" class="page sheet-paper hidden">
+
+  <!-- Header: Name + Physical -->
+  <div style="margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--border);">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+      <div class="dnd-logo" style="font-size:18px;">D&amp;D</div>
+      <input id="char-name-p2" class="char-name-display" placeholder="Nome do Personagem" style="max-width:260px;">
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr) repeat(3,1fr);gap:4px 14px;align-items:end;">
+      <div class="meta-field"><input id="app-age" class="editable-field" placeholder="22 anos"><div class="section-label">IDADE</div></div>
+      <div class="meta-field"><input id="app-height" class="editable-field" placeholder="1,02 m"><div class="section-label">ALTURA</div></div>
+      <div class="meta-field"><input id="app-weight" class="editable-field" placeholder="29 kg"><div class="section-label">PESO</div></div>
+      <div class="meta-field"><input id="app-eyes" class="editable-field" placeholder="negros brilhantes"><div class="section-label">OLHOS</div></div>
+      <div class="meta-field"><input id="app-skin" class="editable-field" placeholder="cinza escuro"><div class="section-label">PELE</div></div>
+      <div class="meta-field"><input id="app-hair" class="editable-field" placeholder="pelagem curta"><div class="section-label">CABELOS</div></div>
+    </div>
+  </div>
+
+  <!-- 3-col layout -->
+  <div style="display:grid;grid-template-columns:220px 1fr 220px;gap:8px;align-items:start;">
+
+    <!-- Col 1: Appearance + Backstory -->
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div class="sheet-box" style="padding-bottom:18px;position:relative;min-height:200px;">
+        <!-- Portrait -->
+        <div id="portrait-area" style="width:100%;height:160px;border:1px dashed var(--border-light);display:flex;align-items:center;justify-content:center;margin-bottom:4px;border-radius:3px;cursor:pointer;color:var(--border-light);font-size:12px;font-style:italic;" onclick="document.getElementById('portrait-upload').click()">
+          Clique para adicionar retrato
+        </div>
+        <input type="file" id="portrait-upload" accept="image/*" style="display:none">
+        <textarea id="app-desc" class="editable-area" style="min-height:50px;font-size:12px;" placeholder="Descrição física..."></textarea>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">APARÊNCIA DO PERSONAGEM</div>
+      </div>
+      <div class="sheet-box" style="padding-bottom:18px;position:relative;flex:1;min-height:160px;">
+        <textarea id="backstory-text" class="editable-area" style="min-height:140px;" placeholder="História do personagem..."></textarea>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">HISTÓRIA DO PERSONAGEM</div>
+      </div>
+    </div>
+
+    <!-- Col 2: Allies + Other Features -->
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div class="sheet-box" style="padding-bottom:18px;position:relative;min-height:200px;">
+        <!-- Allies org portrait placeholder -->
+        <div style="width:100%;height:80px;border:1px dashed var(--border-light);display:flex;align-items:center;justify-content:center;margin-bottom:4px;border-radius:3px;color:var(--border-light);font-size:12px;font-style:italic;">Símbolo / Brasão</div>
+        <textarea id="allies-text" class="editable-area" style="min-height:100px;" placeholder="Aliados e organizações..."></textarea>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">ALIADOS E ORGANIZAÇÕES</div>
+      </div>
+      <div class="sheet-box" style="padding-bottom:18px;position:relative;flex:1;min-height:280px;">
+        <div id="features-container"></div>
+        <button id="add-feature" style="font-size:12px;color:var(--border-light);background:transparent;border:1px dashed var(--border-light);border-radius:3px;padding:1px 6px;cursor:pointer;margin-top:3px;">+ característica</button>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">OUTRAS CARACTERÍSTICAS E HABILIDADES</div>
+      </div>
+    </div>
+
+    <!-- Col 3: Treasure -->
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div class="sheet-box" style="padding-bottom:18px;position:relative;min-height:200px;">
+        <textarea id="treasure-text" class="editable-area" style="min-height:160px;" placeholder="Tesouro e itens especiais..."></textarea>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">TESOURO</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!--  PAGE 3 — MAGIAS                                          -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div id="page3" class="page sheet-paper hidden">
+
+  <!-- Header -->
+  <div style="margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--border);">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+      <div class="dnd-logo" style="font-size:18px;">D&amp;D</div>
+      <div style="flex:1">
+        <input id="spell-class" class="char-name-display" placeholder="Classe de Conjurador" style="font-size:16px;">
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,140px);gap:8px;">
+      <div class="meta-field">
+        <input id="spell-ability" class="editable-field" placeholder="—">
+        <div class="section-label">HABILIDADE CHAVE</div>
+      </div>
+      <div class="meta-field">
+        <input id="spell-dc" class="editable-field" type="number" placeholder="—">
+        <div class="section-label">CD DO TESTE DE RESISTÊNCIA</div>
+      </div>
+      <div class="meta-field">
+        <input id="spell-atk" class="editable-field" type="number" placeholder="—">
+        <div class="section-label">BÔNUS DE ATAQUE DE MAGIA</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3-col spell grid -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:start;">
+
+    <!-- Col 1: Cantrips + Level 1 + Level 2 -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <!-- Cantrips -->
+      <div class="sheet-box" style="padding-bottom:18px;position:relative;">
+        <div class="spell-level-header">
+          <div class="spell-level-num">0</div>
+          <div class="spell-slots-area" style="font-style:italic;font-size:12px;">Truques</div>
+        </div>
+        <div id="cantrips-list"></div>
+        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">TRUQUES</div>
+      </div>
+
+      <!-- Level 1 -->
+      <div class="sheet-box">
+        <div class="spell-level-header">
+          <div class="spell-level-num">1</div>
+          <div class="spell-slots-area">
+            <span style="font-size:11px;opacity:0.7;">Total:</span>
+            <input id="spell-total-1" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
+            <input id="spell-used-1" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+          </div>
+        </div>
+        <div id="spells-lvl-1"></div>
+      </div>
+
+      <!-- Level 2 -->
+      <div class="sheet-box">
+        <div class="spell-level-header">
+          <div class="spell-level-num">2</div>
+          <div class="spell-slots-area">
+            <span style="font-size:11px;opacity:0.7;">Total:</span>
+            <input id="spell-total-2" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
+            <input id="spell-used-2" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+          </div>
+        </div>
+        <div id="spells-lvl-2"></div>
+      </div>
+    </div>
+
+    <!-- Col 2: Levels 3–5 -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <!-- Level 3 -->
+      <div class="sheet-box">
+        <div class="spell-level-header">
+          <div class="spell-level-num">3</div>
+          <div class="spell-slots-area">
+            <span style="font-size:11px;opacity:0.7;">Total:</span>
+            <input id="spell-total-3" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
+            <input id="spell-used-3" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+          </div>
+        </div>
+        <div id="spells-lvl-3"></div>
+      </div>
+
+      <!-- Level 4 -->
+      <div class="sheet-box">
+        <div class="spell-level-header">
+          <div class="spell-level-num">4</div>
+          <div class="spell-slots-area">
+            <span style="font-size:11px;opacity:0.7;">Total:</span>
+            <input id="spell-total-4" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
+            <input id="spell-used-4" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+          </div>
+        </div>
+        <div id="spells-lvl-4"></div>
+      </div>
+
+      <!-- Level 5 -->
+      <div class="sheet-box">
+        <div class="spell-level-header">
+          <div class="spell-level-num">5</div>
+          <div class="spell-slots-area">
+            <span style="font-size:11px;opacity:0.7;">Total:</span>
+            <input id="spell-total-5" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
+            <input id="spell-used-5" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+          </div>
+        </div>
+        <div id="spells-lvl-5"></div>
+      </div>
+    </div>
+
+    <!-- Col 3: Levels 6–9 -->
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <!-- Level 6 -->
+      <div class="sheet-box">
+        <div class="spell-level-header">
+          <div class="spell-level-num">6</div>
+          <div class="spell-slots-area">
+            <span style="font-size:11px;opacity:0.7;">Total:</span>
+            <input id="spell-total-6" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
+            <input id="spell-used-6" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+          </div>
+        </div>
+        <div id="spells-lvl-6"></div>
+      </div>
+
+      <!-- Level 7 -->
+      <div class="sheet-box">
+        <div class="spell-level-header">
+          <div class="spell-level-num">7</div>
+          <div class="spell-slots-area">
+            <span style="font-size:11px;opacity:0.7;">Total:</span>
+            <input id="spell-total-7" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
+            <input id="spell-used-7" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+          </div>
+        </div>
+        <div id="spells-lvl-7"></div>
+      </div>
+
+      <!-- Level 8 -->
+      <div class="sheet-box">
+        <div class="spell-level-header">
+          <div class="spell-level-num">8</div>
+          <div class="spell-slots-area">
+            <span style="font-size:11px;opacity:0.7;">Total:</span>
+            <input id="spell-total-8" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
+            <input id="spell-used-8" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+          </div>
+        </div>
+        <div id="spells-lvl-8"></div>
+      </div>
+
+      <!-- Level 9 -->
+      <div class="sheet-box">
+        <div class="spell-level-header">
+          <div class="spell-level-num">9</div>
+          <div class="spell-slots-area">
+            <span style="font-size:11px;opacity:0.7;">Total:</span>
+            <input id="spell-total-9" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
+            <input id="spell-used-9" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
+          </div>
+        </div>
+        <div id="spells-lvl-9"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Scripts ─────────────────────────────────────────────── -->
+<script src="character-data.js"></script>
+<script src="calculations.js"></script>
+<script src="storage.js"></script>
+<script src="app.js"></script>
+
+<script>
+  // Portrait upload
+  document.getElementById("portrait-upload")?.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const area = document.getElementById("portrait-area");
+      area.innerHTML = `<img src="${ev.target.result}" style="width:100%;height:160px;object-fit:cover;border-radius:3px;">`;
+      char.appearance.portrait = ev.target.result;
+      markDirty();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Restore portrait if saved
+  document.addEventListener("DOMContentLoaded", () => {
+    if (char.appearance?.portrait) {
+      const area = document.getElementById("portrait-area");
+      if (area) area.innerHTML = `<img src="${char.appearance.portrait}" style="width:100%;height:160px;object-fit:cover;border-radius:3px;">`;
+    }
+
+    // Features on page 1 (compact view)
+    const p1feat = document.getElementById("features-p1");
+    if (p1feat) {
+      char.features.slice(0, 3).forEach((f) => {
+        const d = document.createElement("div");
+        d.className = "feature-entry";
+        d.innerHTML = `<div class="feature-name">${f.name}</div><div class="feature-desc">${f.description}</div>`;
+        p1feat.appendChild(d);
+      });
+    }
+  });
+</script>
+
+</body>
+</html>

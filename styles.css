@@ -1,0 +1,700 @@
+/* ─── Fonts ─────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700&family=IM+Fell+English:ital@0;1&display=swap');
+
+/* ─── CSS Variables ─────────────────────────────────────────── */
+:root {
+  --ink: #1a1205;
+  --parchment: #f5f0e8;
+  --parchment-dark: #e8e0cc;
+  --border: #2a2010;
+  --border-light: #6b5a3e;
+  --accent: #8b0000;
+  --shadow: rgba(0,0,0,0.15);
+  --toolbar-h: 56px;
+}
+
+.dark {
+  --ink: #e8dcc8;
+  --parchment: #1a1a2e;
+  --parchment-dark: #16213e;
+  --border: #8b7355;
+  --border-light: #5a4a3a;
+  --accent: #c0392b;
+  --shadow: rgba(0,0,0,0.5);
+}
+
+/* ─── Base ──────────────────────────────────────────────────── */
+* { box-sizing: border-box; }
+
+body {
+  background: #4a4035;
+  font-family: 'IM Fell English', Georgia, serif;
+  color: var(--ink);
+  padding-top: var(--toolbar-h);
+}
+
+/* ─── Sheet Paper ───────────────────────────────────────────── */
+.sheet-paper {
+  background: var(--parchment);
+  color: var(--ink);
+  max-width: 1100px;
+  margin: 16px auto;
+  padding: 20px;
+  border: 3px solid var(--border);
+  border-radius: 4px;
+  box-shadow: 0 4px 24px var(--shadow);
+  position: relative;
+}
+
+.sheet-paper::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--border-light);
+  pointer-events: none;
+  border-radius: 2px;
+}
+
+/* ─── Toolbar ───────────────────────────────────────────────── */
+#toolbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--toolbar-h);
+  background: #1a1205;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  z-index: 100;
+  border-bottom: 2px solid #6b5a3e;
+}
+
+.tab-btn {
+  padding: 7px 16px;
+  border: 1px solid #6b5a3e;
+  border-radius: 3px;
+  color: #c8b89a;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: 'IM Fell English', serif;
+  background: transparent;
+  transition: all 0.15s;
+  letter-spacing: 0.03em;
+}
+
+.tab-btn:hover { background: #2a2010; color: #f5f0e8; }
+.tab-btn.active { background: #6b5a3e; color: #f5f0e8; }
+
+.tool-btn {
+  padding: 6px 13px;
+  border-radius: 3px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: 'IM Fell English', serif;
+  border: 1px solid #6b5a3e;
+  color: #c8b89a;
+  background: transparent;
+  transition: all 0.15s;
+}
+
+.tool-btn:hover { background: #2a2010; color: #f5f0e8; }
+.tool-btn.danger { border-color: #8b2020; color: #c87070; }
+.tool-btn.danger:hover { background: #3a1010; color: #f08080; }
+
+#save-indicator {
+  font-size: 13px;
+  color: #6b8b6b;
+  opacity: 0;
+  transition: opacity 0.5s;
+  margin-left: auto;
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+}
+
+#save-indicator.visible { opacity: 1; }
+
+/* ─── Section Labels ────────────────────────────────────────── */
+.section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--ink);
+  margin-top: 2px;
+  opacity: 0.75;
+}
+
+/* ─── Attribute Blocks ──────────────────────────────────────── */
+.attr-block {
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 4px 5px;
+  text-align: center;
+  position: relative;
+  background: var(--parchment);
+  min-width: 72px;
+}
+
+.attr-name {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.attr-score {
+  font-family: 'Cinzel', serif;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+}
+
+.attr-score:focus {
+  background: rgba(139,115,85,0.1);
+  border-radius: 3px;
+}
+
+.attr-mod {
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-size: 17px;
+  font-weight: 700;
+  margin: 4px auto 0;
+  color: var(--ink);
+  background: var(--parchment);
+}
+
+/* ─── Bordered Box ──────────────────────────────────────────── */
+.sheet-box {
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 7px;
+  background: var(--parchment);
+  position: relative;
+}
+
+.sheet-box-title {
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--parchment);
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+/* ─── Skill / Saving Throw Rows ─────────────────────────────── */
+.skill-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 1px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.1s;
+}
+
+.skill-row:hover { background: rgba(139,115,85,0.08); }
+
+.prof-indicator {
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.1s;
+}
+
+.prof-indicator.filled { background: var(--border); }
+.prof-indicator.half::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--border);
+  border-radius: 50%;
+  display: block;
+}
+
+.skill-bonus {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 28px;
+  text-align: right;
+  color: var(--ink);
+}
+
+.skill-name {
+  font-size: 12px;
+  color: var(--ink);
+  flex: 1;
+  font-style: italic;
+}
+
+/* ─── Combat Stat Boxes ─────────────────────────────────────── */
+.combat-stat {
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  text-align: center;
+  padding: 4px 8px 2px;
+  min-width: 70px;
+}
+
+.combat-stat-value {
+  font-family: 'Cinzel', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.combat-stat-value:focus { background: rgba(139,115,85,0.1); border-radius: 2px; }
+
+/* ─── HP Box ────────────────────────────────────────────────── */
+.hp-box {
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+.hp-current {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--ink);
+  width: 100%;
+  text-align: center;
+  border: none;
+  background: transparent;
+  outline: none;
+}
+.hp-current:focus { background: rgba(139,115,85,0.1); border-radius: 2px; }
+
+/* ─── Death Saves ───────────────────────────────────────────── */
+.death-pip {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+  transition: background 0.1s;
+  margin: 0 2px;
+}
+.death-pip.filled { background: var(--border); }
+.death-pip.fail-filled { background: var(--accent); border-color: var(--accent); }
+
+/* ─── Attacks Table ─────────────────────────────────────────── */
+.attacks-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.attacks-table th {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1.5px solid var(--border);
+  padding: 3px 4px;
+  text-align: left;
+  color: var(--ink);
+  opacity: 0.75;
+}
+
+.attacks-table td {
+  padding: 4px 4px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--ink);
+}
+
+.attacks-table td input {
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+.attacks-table td input:focus {
+  background: rgba(139,115,85,0.1);
+  border-radius: 2px;
+}
+
+/* ─── Editable Text Areas ───────────────────────────────────── */
+.editable-area {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: 13px;
+  color: var(--ink);
+  resize: none;
+  min-height: 60px;
+  line-height: 1.6;
+}
+
+.editable-area:focus {
+  background: rgba(139,115,85,0.06);
+  border-radius: 2px;
+}
+
+.editable-field {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  outline: none;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: 14px;
+  color: var(--ink);
+  width: 100%;
+  padding: 2px 2px;
+}
+
+.editable-field:focus {
+  background: rgba(139,115,85,0.06);
+  border-bottom-color: var(--border);
+}
+
+/* ─── Header ────────────────────────────────────────────────── */
+.sheet-header-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--border);
+}
+
+.logo-name-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dnd-logo {
+  font-family: 'MedievalSharp', 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+}
+
+.char-name-display {
+  font-family: 'Cinzel', serif;
+  font-size: 24px;
+  font-weight: 700;
+  border: none;
+  border-bottom: 2px solid var(--border);
+  background: transparent;
+  color: var(--ink);
+  outline: none;
+  width: 100%;
+  padding: 0 2px;
+}
+
+.char-name-display:focus { background: rgba(139,115,85,0.06); }
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
+  gap: 2px 12px;
+  align-items: end;
+}
+
+.meta-field {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Passive Perception Box ────────────────────────────────── */
+.passive-box {
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 700;
+  flex-shrink: 0;
+  color: var(--ink);
+}
+
+/* ─── Equipment List ────────────────────────────────────────── */
+.equipment-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.equipment-list li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-bottom: 1px dotted var(--border-light);
+  padding: 2px 0;
+}
+
+.equipment-list li::before {
+  content: '◇';
+  font-size: 9px;
+  color: var(--border-light);
+  flex-shrink: 0;
+}
+
+.equipment-list li input {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: 12px;
+  color: var(--ink);
+  width: 100%;
+}
+
+/* ─── Money Table ───────────────────────────────────────────── */
+.money-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
+}
+
+.money-cell {
+  border: 1.5px solid var(--border);
+  border-radius: 3px;
+  text-align: center;
+  padding: 3px;
+}
+
+.money-cell input {
+  background: transparent;
+  border: none;
+  outline: none;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  width: 100%;
+}
+
+/* ─── Features ──────────────────────────────────────────────── */
+.feature-entry {
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px dotted var(--border-light);
+}
+
+.feature-name {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+}
+
+.feature-desc {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ink);
+  font-style: italic;
+}
+
+/* ─── Spells Page ───────────────────────────────────────────── */
+.spell-level-header {
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  overflow: hidden;
+  margin-bottom: 4px;
+  width: 100%;
+}
+
+.spell-level-num {
+  background: var(--border);
+  color: var(--parchment);
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  width: 32px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.spell-slots-area {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  flex: 1;
+  font-size: 11px;
+  color: var(--ink);
+}
+
+.spell-slot-pip {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.1s;
+  flex-shrink: 0;
+}
+
+.spell-slot-pip.used { background: var(--border); }
+
+.spell-line {
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  background: transparent;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: 12px;
+  color: var(--ink);
+  width: 100%;
+  padding: 2px 2px;
+  outline: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 2px 0;
+}
+
+.spell-line input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  outline: none;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: 12px;
+  color: var(--ink);
+  width: 100%;
+}
+
+.spell-prepared-pip {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.1s;
+}
+.spell-prepared-pip.prepared { background: var(--border); }
+
+/* ─── Inspiration ───────────────────────────────────────────── */
+.inspiration-box {
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.inspiration-box.lit {
+  background: var(--border);
+  box-shadow: 0 0 8px rgba(139,115,85,0.5);
+}
+
+/* ─── Personality Boxes ─────────────────────────────────────── */
+.trait-box {
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  padding: 6px;
+  margin-bottom: 5px;
+  position: relative;
+}
+
+/* ─── Prof Bonus Badge ──────────────────────────────────────── */
+.prof-badge {
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3px 8px 2px;
+}
+
+/* ─── Hit Dice ──────────────────────────────────────────────── */
+.hit-dice-box {
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  text-align: center;
+  padding: 4px 6px 2px;
+}
+
+/* ─── Print ─────────────────────────────────────────────────── */
+@media print {
+  #toolbar { display: none !important; }
+  body { padding-top: 0; background: white; }
+  .sheet-paper {
+    margin: 0;
+    border: none;
+    box-shadow: none;
+    max-width: 100%;
+    page-break-after: always;
+  }
+  .sheet-paper::before { display: none; }
+  .page.hidden { display: block !important; }
+}
+
+/* ─── Dark Mode overrides ───────────────────────────────────── */
+.dark .sheet-paper { border-color: #5a4a3a; }
+.dark .attr-block { border-color: #5a4a3a; }
+.dark .attr-mod { border-color: #5a4a3a; }
+.dark input, .dark textarea {
+  caret-color: #c8b89a;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #2a2010; }
+::-webkit-scrollbar-thumb { background: #6b5a3e; border-radius: 3px; }
