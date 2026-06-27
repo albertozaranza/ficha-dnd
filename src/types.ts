@@ -37,11 +37,33 @@ export interface Campaign {
   createdAt: string;
   updatedAt: string;
   character: Character;
-  sessions: any[];
+  sessions: Session[];
   npcs: any[];
   quests: any[];
   monsters: any[];
   locations: any[];
   factions: any[];
   artifacts: any[];
+}
+
+export type EventTag = "NPC" | "Local" | "Quest" | "Combate" | "Revelação";
+
+export interface SessionEvent {
+  id: string;
+  text: string;
+  tags: EventTag[];
+}
+
+export interface Session {
+  id: string;
+  number: number;
+  date: string; // ISO
+  title: string;
+  summary: string;
+  participants: string[];
+  events: SessionEvent[];
+  xp?: number;
+  gold?: number;
+  createdAt: string;
+  updatedAt: string;
 }

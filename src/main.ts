@@ -2,6 +2,7 @@ import "./styles.css";
 import { Calc } from "./calculations";
 import { Storage } from "./storage";
 import type { AttrKey, Campaign, Character } from "./types";
+import { Journal } from "./journal";
 
 // ─── Conditions ───────────────────────────────────────────────
 const CONDITIONS = [
@@ -67,6 +68,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: "spells", label: "Magias", icon: '<path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7l3-7z"/>' },
   { id: "character", label: "Personagem", icon: '<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>' },
   { id: "notes", label: "Notas", icon: '<path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>' },
+  { id: "journal", label: "Diário", icon: '<path d="M3 5h14v14H3z"/><path d="M7 9h6"/>' },
 ];
 
 function initNav() {
@@ -992,6 +994,7 @@ function renderAll() {
   renderSpells();
   renderCharacter();
   renderNotes();
+  Journal.render();
 }
 
 // ─── Boot ─────────────────────────────────────────────────────
@@ -1001,5 +1004,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initToolbar();
   initPortraitUpload();
   initKeyboard();
+  Journal.init(campaign, markDirty);
   renderAll();
 });
