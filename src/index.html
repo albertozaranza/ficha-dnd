@@ -1,620 +1,458 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ficha D&D 5e — Skritch Cauda-de-Ferro</title>
+  <title>D&D 5e — Skritch Cauda-de-Ferro</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <style>
-    /* Tailwind dark mode via class */
-    .dark-mode-target { }
-  </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════════════════ -->
-<!--  TOOLBAR                                                  -->
-<!-- ══════════════════════════════════════════════════════════ -->
-<div id="toolbar">
-  <span style="color:#c87020;font-family:'Cinzel',serif;font-size:16px;font-weight:700;letter-spacing:0.05em;margin-right:8px;">D&amp;D 5e</span>
+<div id="app">
 
-  <button class="tab-btn active" data-page="page1">⚔ Ficha</button>
-  <button class="tab-btn" data-page="page2">👤 Personagem</button>
-  <button class="tab-btn" data-page="page3">✦ Magias</button>
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SIDEBAR                                                   -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <aside id="sidebar">
 
-  <div style="width:1px;height:28px;background:#3a3020;margin:0 4px;"></div>
+    <div class="sidebar-hero">
+      <div class="char-avatar" id="char-avatar" title="Trocar retrato" onclick="document.getElementById('portrait-upload').click()">
+        <img id="avatar-img" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:inherit;">
+        <span id="avatar-initials">SK</span>
+      </div>
+      <div class="sidebar-char-info">
+        <input id="hero-name" class="hero-name-input" placeholder="Nome do Personagem">
+        <div id="hero-subtitle" class="hero-subtitle">Ladino · Nv. 1</div>
+        <div id="hero-race" class="hero-race">Ferakh (Rato)</div>
+      </div>
+    </div>
 
-  <button class="tool-btn" id="btn-save">💾 Salvar</button>
-  <button class="tool-btn" id="btn-export">↑ Exportar</button>
-  <button class="tool-btn" id="btn-import">↓ Importar</button>
-  <button class="tool-btn" id="btn-print">🖨 Imprimir</button>
-  <button class="tool-btn danger" id="btn-reset">↺ Resetar</button>
-  <button class="tool-btn" id="btn-dark">☾ Escuro</button>
+    <div class="xp-section">
+      <div class="xp-bar"><div id="xp-fill" class="xp-fill" style="width:0%"></div></div>
+      <div class="xp-text">
+        <span id="xp-val">0 XP</span>
+        <span id="xp-next">próximo nível</span>
+      </div>
+    </div>
 
-  <input type="file" id="import-file" accept=".json" style="display:none">
-  <span id="save-indicator">✓ Salvo</span>
+    <nav class="sidebar-nav">
+      <button class="nav-btn active" data-view="overview">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Visão Geral
+      </button>
+      <button class="nav-btn" data-view="combat">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6 2 2-6 6-2-2z"/><path d="M3 21l3.75-3.75"/></svg>
+        Combate
+      </button>
+      <button class="nav-btn" data-view="skills">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+        Perícias
+      </button>
+      <button class="nav-btn" data-view="equipment">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        Equipamento
+      </button>
+      <button class="nav-btn" data-view="features">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Habilidades
+      </button>
+      <button class="nav-btn" data-view="spells">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7l3-7z"/></svg>
+        Magias
+      </button>
+      <button class="nav-btn" data-view="character">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Personagem
+      </button>
+      <button class="nav-btn" data-view="notes">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Notas
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="footer-actions">
+        <button class="action-btn" id="btn-save" title="Salvar">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        </button>
+        <button class="action-btn" id="btn-export" title="Exportar JSON">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+        <button class="action-btn" id="btn-import" title="Importar JSON">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </button>
+        <button class="action-btn" id="btn-print" title="Imprimir">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        </button>
+        <button class="action-btn" id="btn-dark" title="Alternar tema">
+          <svg id="icon-dark" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          <svg id="icon-light" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+        <button class="action-btn danger" id="btn-reset" title="Resetar personagem">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+        </button>
+      </div>
+      <span id="save-indicator" class="save-indicator">✓ Salvo</span>
+    </div>
+
+  </aside>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- MAIN CONTENT                                              -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <main id="main">
+
+    <!-- ════════════════════════════════════════════════════════ -->
+    <!-- VIEW: OVERVIEW                                          -->
+    <!-- ════════════════════════════════════════════════════════ -->
+    <section id="view-overview" class="view active">
+      <div class="view-header">
+        <h2 class="view-title">Visão Geral</h2>
+        <div class="badge-row">
+          <span class="badge accent">Prof <span id="prof-bonus">+2</span></span>
+          <button id="inspiration-btn" class="badge inspiration-badge" title="Clique para alternar inspiração">Inspiração</button>
+          <span class="badge" id="passive-badge">Percepção Passiva: <strong id="passive-perception">10</strong></span>
+        </div>
+      </div>
+
+      <div class="meta-strip">
+        <div class="meta-item">
+          <input id="meta-class" class="meta-input" placeholder="Ladino">
+          <span class="meta-label">Classe</span>
+        </div>
+        <div class="meta-divider"></div>
+        <div class="meta-item">
+          <input id="meta-subclass" class="meta-input" placeholder="Arcano">
+          <span class="meta-label">Subclasse</span>
+        </div>
+        <div class="meta-divider"></div>
+        <div class="meta-item" style="max-width:64px">
+          <input id="meta-level" class="meta-input" type="number" min="1" max="20" placeholder="1" style="text-align:center">
+          <span class="meta-label">Nível</span>
+        </div>
+        <div class="meta-divider"></div>
+        <div class="meta-item">
+          <input id="meta-bg" class="meta-input" placeholder="Criminoso">
+          <span class="meta-label">Antecedente</span>
+        </div>
+        <div class="meta-divider"></div>
+        <div class="meta-item">
+          <input id="meta-align" class="meta-input" placeholder="Caótico Neutro">
+          <span class="meta-label">Tendência</span>
+        </div>
+        <div class="meta-divider"></div>
+        <div class="meta-item" style="max-width:96px">
+          <input id="meta-xp" class="meta-input" type="number" min="0" placeholder="0" style="text-align:center">
+          <span class="meta-label">Experiência</span>
+        </div>
+      </div>
+
+      <div id="stats-grid" class="stats-grid"></div>
+
+      <div class="quick-stats-row">
+        <div class="quick-card">
+          <input id="ov-ac" class="quick-value" type="number" min="0" max="30" placeholder="14">
+          <div class="quick-label">Classe de Armadura</div>
+        </div>
+        <div class="quick-card hp-quick-card">
+          <div class="hp-quick-nums">
+            <span id="ov-hp-cur" class="hp-quick-cur">—</span>
+            <span class="hp-quick-sep">/</span>
+            <span id="ov-hp-max" class="hp-quick-max">—</span>
+          </div>
+          <div class="hp-bar-track"><div id="ov-hp-bar" class="hp-bar-fill"></div></div>
+          <div class="quick-label">Pontos de Vida <span style="font-size:10px;opacity:0.6">(editar em Combate)</span></div>
+        </div>
+        <div class="quick-card">
+          <div id="ov-init" class="quick-value-static">+0</div>
+          <div class="quick-label">Iniciativa</div>
+        </div>
+        <div class="quick-card">
+          <input id="ov-speed" class="quick-value" placeholder="9m">
+          <div class="quick-label">Deslocamento</div>
+        </div>
+        <div class="quick-card">
+          <input id="ov-hd" class="quick-value" placeholder="1d8">
+          <div class="quick-label">Dados de Vida</div>
+        </div>
+      </div>
+
+      <div class="personality-grid">
+        <div class="personality-card">
+          <div class="pcard-label">Traços de Personalidade</div>
+          <textarea id="ov-traits" class="pcard-text" placeholder="Traços..."></textarea>
+        </div>
+        <div class="personality-card">
+          <div class="pcard-label">Ideais</div>
+          <textarea id="ov-ideals" class="pcard-text" placeholder="Ideais..."></textarea>
+        </div>
+        <div class="personality-card">
+          <div class="pcard-label">Ligações</div>
+          <textarea id="ov-bonds" class="pcard-text" placeholder="Ligações..."></textarea>
+        </div>
+        <div class="personality-card">
+          <div class="pcard-label">Defeitos</div>
+          <textarea id="ov-flaws" class="pcard-text" placeholder="Defeitos..."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════ -->
+    <!-- VIEW: COMBAT                                            -->
+    <!-- ════════════════════════════════════════════════════════ -->
+    <section id="view-combat" class="view">
+      <div class="view-header">
+        <h2 class="view-title">Combate</h2>
+      </div>
+
+      <div class="hp-hero">
+        <div class="hp-hero-top">
+          <span class="hp-hero-label">Pontos de Vida</span>
+          <div class="hp-temp-inline">
+            <span>Temporários</span>
+            <input id="hp-temp" type="number" min="0" class="hp-temp-input" placeholder="0">
+          </div>
+        </div>
+        <div class="hp-hero-numbers">
+          <input id="hp-current" class="hp-big hp-cur-color" type="number" min="0" placeholder="0">
+          <span class="hp-slash">/</span>
+          <input id="hp-max" class="hp-big hp-max-style" type="number" min="0" placeholder="0">
+        </div>
+        <div class="hp-progress-track">
+          <div id="hp-bar" class="hp-progress-fill"></div>
+        </div>
+        <div class="hp-quick-actions">
+          <button class="hp-action-btn heal" id="btn-heal">+ Curar</button>
+          <button class="hp-action-btn damage" id="btn-damage">− Dano</button>
+        </div>
+      </div>
+
+      <div class="combat-stats-grid">
+        <div class="cstat-card">
+          <input id="combat-ac" class="cstat-value" type="number" min="0" max="30" placeholder="14">
+          <div class="cstat-label">CA</div>
+        </div>
+        <div class="cstat-card">
+          <div id="combat-ini" class="cstat-value cstat-static">+0</div>
+          <div class="cstat-label">Iniciativa</div>
+        </div>
+        <div class="cstat-card">
+          <input id="combat-speed" class="cstat-value" placeholder="9m">
+          <div class="cstat-label">Deslocamento</div>
+        </div>
+        <div class="cstat-card">
+          <input id="combat-hd" class="cstat-value" placeholder="1d8">
+          <div class="cstat-label">Dados de Vida</div>
+        </div>
+      </div>
+
+      <div class="death-saves-card">
+        <span class="ds-title">Testes contra a Morte</span>
+        <div class="ds-group">
+          <span class="ds-label success-text">Sucessos</span>
+          <div class="ds-pips">
+            <span class="ds-pip success" data-i="0"></span>
+            <span class="ds-pip success" data-i="1"></span>
+            <span class="ds-pip success" data-i="2"></span>
+          </div>
+        </div>
+        <div class="ds-group">
+          <span class="ds-label fail-text">Fracassos</span>
+          <div class="ds-pips">
+            <span class="ds-pip fail" data-i="0"></span>
+            <span class="ds-pip fail" data-i="1"></span>
+            <span class="ds-pip fail" data-i="2"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-hdr">
+          <h3 class="section-title">Ataques</h3>
+          <button id="add-attack" class="add-btn">+ Adicionar</button>
+        </div>
+        <div class="attack-header-row">
+          <span>Nome</span><span>Bônus</span><span>Dano</span><span>Tipo</span><span></span>
+        </div>
+        <div id="attacks-list" class="attacks-list"></div>
+        <textarea id="attack-notes" class="notes-area" placeholder="Notas sobre ataques e magias..."></textarea>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════ -->
+    <!-- VIEW: SKILLS                                            -->
+    <!-- ════════════════════════════════════════════════════════ -->
+    <section id="view-skills" class="view">
+      <div class="view-header">
+        <h2 class="view-title">Perícias</h2>
+        <input id="skill-search" class="search-input" type="search" placeholder="Buscar...">
+      </div>
+      <div class="skills-hint">Clique para alternar proficiência → expertise → nenhuma</div>
+      <div id="skills-container" class="skills-container"></div>
+
+      <div class="section-hdr" style="margin-top:32px;margin-bottom:12px">
+        <h3 class="section-title">Testes de Resistência</h3>
+      </div>
+      <div id="saves-list" class="saves-grid"></div>
+
+      <div class="section-hdr" style="margin-top:28px;margin-bottom:10px">
+        <h3 class="section-title">Idiomas &amp; Proficiências</h3>
+      </div>
+      <textarea id="langs-text" class="notes-area" style="min-height:120px" placeholder="Idiomas e proficiências..."></textarea>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════ -->
+    <!-- VIEW: EQUIPMENT                                         -->
+    <!-- ════════════════════════════════════════════════════════ -->
+    <section id="view-equipment" class="view">
+      <div class="view-header">
+        <h2 class="view-title">Equipamento</h2>
+        <button id="add-equipment" class="add-btn">+ Adicionar item</button>
+      </div>
+
+      <div class="money-row">
+        <div class="coin-card cp-coin">
+          <input id="money-cp" type="number" min="0" placeholder="0" class="coin-input">
+          <div class="coin-label">PC</div>
+        </div>
+        <div class="coin-card sp-coin">
+          <input id="money-sp" type="number" min="0" placeholder="0" class="coin-input">
+          <div class="coin-label">PP</div>
+        </div>
+        <div class="coin-card ep-coin">
+          <input id="money-ep" type="number" min="0" placeholder="0" class="coin-input">
+          <div class="coin-label">PE</div>
+        </div>
+        <div class="coin-card gp-coin">
+          <input id="money-gp" type="number" min="0" placeholder="0" class="coin-input gp-color">
+          <div class="coin-label">PO</div>
+        </div>
+        <div class="coin-card pp-coin">
+          <input id="money-pp" type="number" min="0" placeholder="0" class="coin-input pp-color">
+          <div class="coin-label">PL</div>
+        </div>
+      </div>
+
+      <div id="equipment-list" class="equipment-list"></div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════ -->
+    <!-- VIEW: FEATURES                                          -->
+    <!-- ════════════════════════════════════════════════════════ -->
+    <section id="view-features" class="view">
+      <div class="view-header">
+        <h2 class="view-title">Habilidades &amp; Características</h2>
+        <button id="add-feature" class="add-btn">+ Adicionar</button>
+      </div>
+      <div id="features-list" class="features-list"></div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════ -->
+    <!-- VIEW: SPELLS                                            -->
+    <!-- ════════════════════════════════════════════════════════ -->
+    <section id="view-spells" class="view">
+      <div class="view-header">
+        <h2 class="view-title">Grimório</h2>
+      </div>
+
+      <div class="spell-stats-row">
+        <div class="sstat-card">
+          <input id="spell-class" class="sstat-value" placeholder="—">
+          <div class="sstat-label">Classe de Conjurador</div>
+        </div>
+        <div class="sstat-card">
+          <input id="spell-ability" class="sstat-value" placeholder="—">
+          <div class="sstat-label">Habilidade Chave</div>
+        </div>
+        <div class="sstat-card">
+          <input id="spell-dc" class="sstat-value" type="number" placeholder="—">
+          <div class="sstat-label">CD de Resistência</div>
+        </div>
+        <div class="sstat-card">
+          <input id="spell-atk" class="sstat-value" type="number" placeholder="—">
+          <div class="sstat-label">Bônus de Ataque</div>
+        </div>
+      </div>
+
+      <div class="spell-group">
+        <div class="spell-group-hdr">
+          <div class="spell-lvl-badge cantrip-badge">0</div>
+          <span class="spell-group-title">Truques</span>
+        </div>
+        <div id="cantrips-list" class="spell-lines"></div>
+      </div>
+
+      <div id="spell-levels-container" class="spell-levels-container"></div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════ -->
+    <!-- VIEW: CHARACTER                                         -->
+    <!-- ════════════════════════════════════════════════════════ -->
+    <section id="view-character" class="view">
+      <div class="view-header">
+        <h2 class="view-title">Personagem</h2>
+      </div>
+      <div class="char-layout">
+        <div class="char-col-left">
+          <div class="portrait-card" id="portrait-area" onclick="document.getElementById('portrait-upload').click()">
+            <img id="portrait-img" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:inherit;">
+            <div id="portrait-placeholder" class="portrait-placeholder">
+              <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span>Adicionar retrato</span>
+            </div>
+          </div>
+          <div class="appearance-grid">
+            <div class="app-field"><input id="app-age" class="app-input" placeholder="22 anos"><div class="app-label">Idade</div></div>
+            <div class="app-field"><input id="app-height" class="app-input" placeholder="1,02 m"><div class="app-label">Altura</div></div>
+            <div class="app-field"><input id="app-weight" class="app-input" placeholder="29 kg"><div class="app-label">Peso</div></div>
+            <div class="app-field"><input id="app-eyes" class="app-input" placeholder="—"><div class="app-label">Olhos</div></div>
+            <div class="app-field"><input id="app-skin" class="app-input" placeholder="—"><div class="app-label">Pele</div></div>
+            <div class="app-field"><input id="app-hair" class="app-input" placeholder="—"><div class="app-label">Cabelos</div></div>
+          </div>
+          <div class="char-section">
+            <div class="char-section-lbl">Aparência Física</div>
+            <textarea id="app-desc" class="notes-area" placeholder="Descrição física..."></textarea>
+          </div>
+        </div>
+        <div class="char-col-right">
+          <div class="char-section">
+            <div class="char-section-lbl">História do Personagem</div>
+            <textarea id="backstory-text" class="notes-area" style="min-height:200px" placeholder="História..."></textarea>
+          </div>
+          <div class="char-section">
+            <div class="char-section-lbl">Aliados e Organizações</div>
+            <textarea id="allies-text" class="notes-area" placeholder="Aliados..."></textarea>
+          </div>
+          <div class="char-section">
+            <div class="char-section-lbl">Tesouro</div>
+            <textarea id="treasure-text" class="notes-area" placeholder="Itens especiais, tesouros..."></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════ -->
+    <!-- VIEW: NOTES                                             -->
+    <!-- ════════════════════════════════════════════════════════ -->
+    <section id="view-notes" class="view">
+      <div class="view-header">
+        <h2 class="view-title">Notas</h2>
+        <span class="muted-hint">Salvo automaticamente</span>
+      </div>
+      <textarea id="notes-editor" class="notes-fullpage" placeholder="Suas notas de aventura, referências de regras, lembretes de sessão..."></textarea>
+    </section>
+
+  </main>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════ -->
-<!--  PAGE 1 — FICHA PRINCIPAL                                 -->
-<!-- ══════════════════════════════════════════════════════════ -->
-<div id="page1" class="page sheet-paper">
+<input type="file" id="portrait-upload" accept="image/*" style="display:none">
+<input type="file" id="import-file" accept=".json" style="display:none">
 
-  <!-- HEADER -->
-  <div style="margin-bottom:10px;">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;border-bottom:2px solid var(--border);padding-bottom:6px;">
-      <div class="dnd-logo">DUNGEONS &amp; DRAGONS®</div>
-      <input id="char-name" class="char-name-display" placeholder="Nome do Personagem" style="flex:1">
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr) repeat(3,1fr);gap:6px 16px;align-items:end;">
-      <div class="meta-field">
-        <input id="char-class" class="editable-field" placeholder="Classe e Nível">
-        <div class="section-label">CLASSE E NÍVEL</div>
-      </div>
-      <div class="meta-field">
-        <input id="char-bg" class="editable-field" placeholder="Antecedente">
-        <div class="section-label">ANTECEDENTE</div>
-      </div>
-      <div class="meta-field">
-        <input id="char-player" class="editable-field" placeholder="Nome do Jogador">
-        <div class="section-label">NOME DO JOGADOR</div>
-      </div>
-      <div class="meta-field">
-        <input id="char-race" class="editable-field" placeholder="Raça">
-        <div class="section-label">RAÇA</div>
-      </div>
-      <div class="meta-field">
-        <input id="char-align" class="editable-field" placeholder="Tendência">
-        <div class="section-label">TENDÊNCIA</div>
-      </div>
-      <div class="meta-field">
-        <input id="char-xp" class="editable-field" placeholder="0" type="number" min="0">
-        <div class="section-label">PONTOS DE EXPERIÊNCIA</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MAIN GRID: 4 cols -->
-  <div style="display:grid;grid-template-columns:96px 152px 1fr 200px;gap:10px;align-items:start;">
-
-    <!-- ── COL 1: ATTRIBUTES ── -->
-    <div style="display:flex;flex-direction:column;gap:5px;">
-      <!-- Attribute blocks -->
-      <div id="attr-str" class="attr-block">
-        <div class="attr-name">FORÇA</div>
-        <input id="attr-score-str" class="attr-score" type="number" min="1" max="30">
-        <div class="attr-mod" id="attr-mod-str">+0</div>
-      </div>
-      <div id="attr-dex" class="attr-block">
-        <div class="attr-name">DESTREZA</div>
-        <input id="attr-score-dex" class="attr-score" type="number" min="1" max="30">
-        <div class="attr-mod" id="attr-mod-dex">+0</div>
-      </div>
-      <div id="attr-con" class="attr-block">
-        <div class="attr-name">CONSTITUIÇÃO</div>
-        <input id="attr-score-con" class="attr-score" type="number" min="1" max="30">
-        <div class="attr-mod" id="attr-mod-con">+0</div>
-      </div>
-      <div id="attr-int" class="attr-block">
-        <div class="attr-name">INTELIGÊNCIA</div>
-        <input id="attr-score-int" class="attr-score" type="number" min="1" max="30">
-        <div class="attr-mod" id="attr-mod-int">+0</div>
-      </div>
-      <div id="attr-wis" class="attr-block">
-        <div class="attr-name">SABEDORIA</div>
-        <input id="attr-score-wis" class="attr-score" type="number" min="1" max="30">
-        <div class="attr-mod" id="attr-mod-wis">+0</div>
-      </div>
-      <div id="attr-cha" class="attr-block">
-        <div class="attr-name">CARISMA</div>
-        <input id="attr-score-cha" class="attr-score" type="number" min="1" max="30">
-        <div class="attr-mod" id="attr-mod-cha">+0</div>
-      </div>
-    </div>
-
-    <!-- ── COL 2: INSPIRATION / PROF / SAVES / SKILLS ── -->
-    <div style="display:flex;flex-direction:column;gap:5px;">
-
-      <!-- Inspiration -->
-      <div class="sheet-box" style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;padding-bottom:16px;">
-        <div id="inspiration-box" class="inspiration-box" title="Clique para alternar Inspiração"></div>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">INSPIRAÇÃO</div>
-      </div>
-
-      <!-- Proficiency Bonus -->
-      <div class="sheet-box" style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;padding-bottom:16px;position:relative;">
-        <div id="prof-bonus" style="font-family:'Cinzel',serif;font-size:22px;font-weight:700;color:var(--ink);">+2</div>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">BÔNUS DE PROFICIÊNCIA</div>
-      </div>
-
-      <!-- Saving Throws -->
-      <div class="sheet-box" style="padding-bottom:18px;position:relative;">
-        <div id="save-row-str" class="skill-row">
-          <div class="prof-indicator"></div>
-          <span class="skill-bonus">+0</span>
-          <span class="skill-name">Força</span>
-        </div>
-        <div id="save-row-dex" class="skill-row">
-          <div class="prof-indicator"></div>
-          <span class="skill-bonus">+0</span>
-          <span class="skill-name">Destreza</span>
-        </div>
-        <div id="save-row-con" class="skill-row">
-          <div class="prof-indicator"></div>
-          <span class="skill-bonus">+0</span>
-          <span class="skill-name">Constituição</span>
-        </div>
-        <div id="save-row-int" class="skill-row">
-          <div class="prof-indicator"></div>
-          <span class="skill-bonus">+0</span>
-          <span class="skill-name">Inteligência</span>
-        </div>
-        <div id="save-row-wis" class="skill-row">
-          <div class="prof-indicator"></div>
-          <span class="skill-bonus">+0</span>
-          <span class="skill-name">Sabedoria</span>
-        </div>
-        <div id="save-row-cha" class="skill-row">
-          <div class="prof-indicator"></div>
-          <span class="skill-bonus">+0</span>
-          <span class="skill-name">Carisma</span>
-        </div>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">TESTES DE RESISTÊNCIA</div>
-      </div>
-
-      <!-- Skills -->
-      <div class="sheet-box" style="padding-bottom:18px;position:relative;">
-        <div style="font-size:11px;color:var(--border-light);font-style:italic;margin-bottom:3px;">● profic. ◉ expertise ○ sem</div>
-        <div id="skill-row-acrobatics" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Acrobacia (Des)</span></div>
-        <div id="skill-row-arcana" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Arcanismo (Int)</span></div>
-        <div id="skill-row-athletics" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Atletismo (For)</span></div>
-        <div id="skill-row-performance" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Atuação (Car)</span></div>
-        <div id="skill-row-deception" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Blefar (Car)</span></div>
-        <div id="skill-row-stealth" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Furtividade (Des)</span></div>
-        <div id="skill-row-history" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">História (Int)</span></div>
-        <div id="skill-row-intimidation" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Intimidação (Car)</span></div>
-        <div id="skill-row-insight" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Intuição (Sab)</span></div>
-        <div id="skill-row-investigation" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Investigação (Int)</span></div>
-        <div id="skill-row-animalHandling" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Lidar c/ Animais (Sab)</span></div>
-        <div id="skill-row-medicine" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Medicina (Sab)</span></div>
-        <div id="skill-row-nature" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Natureza (Int)</span></div>
-        <div id="skill-row-perception" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Percepção (Sab)</span></div>
-        <div id="skill-row-persuasion" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Persuasão (Car)</span></div>
-        <div id="skill-row-sleightOfHand" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Prestidigitação (Des)</span></div>
-        <div id="skill-row-religion" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Religião (Int)</span></div>
-        <div id="skill-row-survival" class="skill-row"><div class="prof-indicator"></div><span class="skill-bonus">+0</span><span class="skill-name">Sobrevivência (Sab)</span></div>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">PERÍCIAS</div>
-      </div>
-    </div>
-
-    <!-- ── COL 3: COMBAT / HP / ATTACKS / EQUIPMENT ── -->
-    <div style="display:flex;flex-direction:column;gap:6px;">
-
-      <!-- Combat Stats Row -->
-      <div style="display:flex;gap:6px;">
-        <div class="combat-stat" style="position:relative;padding-bottom:18px;">
-          <input id="combat-ac" class="combat-stat-value" type="number" min="0" max="30">
-          <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">CLASSE ARMD.</div>
-        </div>
-        <div class="combat-stat" style="position:relative;padding-bottom:18px;min-width:60px;">
-          <div id="combat-ini" class="combat-stat-value" style="display:flex;align-items:center;justify-content:center;height:32px;">+0</div>
-          <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">INICIATIVA</div>
-        </div>
-        <div class="combat-stat" style="position:relative;padding-bottom:18px;">
-          <input id="combat-spd" class="combat-stat-value" style="font-size:22px;" placeholder="9m">
-          <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">DESLOC.</div>
-        </div>
-      </div>
-
-      <!-- HP Max -->
-      <div class="sheet-box" style="padding:4px 8px;">
-        <div style="font-size:12px;color:var(--border-light);font-style:italic;">PV Totais</div>
-        <input id="hp-max" type="number" min="0" style="background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--ink);width:70px;">
-      </div>
-
-      <!-- HP Current -->
-      <div class="hp-box" style="padding-bottom:18px;position:relative;">
-        <input id="hp-current" class="hp-current" type="number" min="0" placeholder="0">
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">PONTOS DE VIDA ATUAIS</div>
-      </div>
-
-      <!-- HP Temp -->
-      <div class="hp-box" style="padding-bottom:18px;position:relative;">
-        <input id="hp-temp" class="hp-current" type="number" min="0" placeholder="—" style="font-size:24px;">
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">PONTOS DE VIDA TEMPORÁRIOS</div>
-      </div>
-
-      <!-- Hit Dice / Death Saves -->
-      <div style="display:flex;gap:6px;">
-        <div class="hit-dice-box" style="flex:1;padding-bottom:18px;position:relative;">
-          <div style="font-size:12px;color:var(--border-light);margin-bottom:2px;">Total</div>
-          <input id="hit-dice-rem" style="background:transparent;border:none;outline:none;font-family:'Cinzel',serif;font-size:24px;font-weight:700;color:var(--ink);width:80px;" placeholder="1d8">
-          <div style="font-size:11px;color:var(--border-light);margin-top:2px;">Restantes: <input id="hit-dice-total" style="background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:inherit;font-size:11px;color:var(--ink);width:36px;" placeholder="1d8"></div>
-          <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">DADOS DE VIDA</div>
-        </div>
-        <div class="sheet-box" style="flex:1;padding-bottom:18px;position:relative;">
-          <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;">
-            <span style="font-size:12px;color:var(--ink);">Sucessos</span>
-            <span class="death-pip success"></span>
-            <span class="death-pip success"></span>
-            <span class="death-pip success"></span>
-          </div>
-          <div style="display:flex;align-items:center;gap:4px;">
-            <span style="font-size:12px;color:var(--ink);">Fracassos</span>
-            <span class="death-pip fail"></span>
-            <span class="death-pip fail"></span>
-            <span class="death-pip fail"></span>
-          </div>
-          <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">TESTES CONTRA A MORTE</div>
-        </div>
-      </div>
-
-      <!-- Attacks -->
-      <div class="sheet-box" style="padding-bottom:18px;position:relative;">
-        <table class="attacks-table">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Bônus</th>
-              <th>Dano / Tipo</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="attacks-tbody"></tbody>
-        </table>
-        <button id="add-attack" style="font-size:12px;color:var(--border-light);background:transparent;border:1px dashed var(--border-light);border-radius:3px;padding:1px 6px;cursor:pointer;margin-top:3px;">+ ataque</button>
-        <textarea id="attack-notes" class="editable-area" style="min-height:40px;margin-top:4px;font-size:12px;" placeholder="Notas sobre ataques..."></textarea>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">ATAQUES E MAGIAS</div>
-      </div>
-
-      <!-- Equipment -->
-      <div class="sheet-box" style="padding-bottom:18px;position:relative;">
-        <!-- Money -->
-        <div class="money-grid" style="margin-bottom:6px;">
-          <div class="money-cell"><input id="money-cp" type="number" min="0" placeholder="0"><div class="section-label">PC</div></div>
-          <div class="money-cell"><input id="money-sp" type="number" min="0" placeholder="0"><div class="section-label">PP</div></div>
-          <div class="money-cell"><input id="money-ep" type="number" min="0" placeholder="0"><div class="section-label">PE</div></div>
-          <div class="money-cell"><input id="money-gp" type="number" min="0" placeholder="0"><div class="section-label">PO</div></div>
-          <div class="money-cell"><input id="money-pp" type="number" min="0" placeholder="0"><div class="section-label">PL</div></div>
-        </div>
-        <ul id="equipment-list" class="equipment-list"></ul>
-        <button id="add-equipment" style="font-size:12px;color:var(--border-light);background:transparent;border:1px dashed var(--border-light);border-radius:3px;padding:1px 6px;cursor:pointer;margin-top:3px;">+ item</button>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">EQUIPAMENTO</div>
-      </div>
-    </div>
-
-    <!-- ── COL 4: PERSONALITY / IDEALS / BONDS / FLAWS / FEATURES ── -->
-    <div style="display:flex;flex-direction:column;gap:5px;">
-      <div class="trait-box" style="position:relative;padding-bottom:18px;">
-        <textarea id="traits-text" class="editable-area" style="min-height:55px;" placeholder="Traços de personalidade..."></textarea>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">TRAÇOS DE PERSONALIDADE</div>
-      </div>
-      <div class="trait-box" style="position:relative;padding-bottom:18px;">
-        <textarea id="ideals-text" class="editable-area" style="min-height:50px;" placeholder="Ideais..."></textarea>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">IDEAIS</div>
-      </div>
-      <div class="trait-box" style="position:relative;padding-bottom:18px;">
-        <textarea id="bonds-text" class="editable-area" style="min-height:50px;" placeholder="Ligações..."></textarea>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">LIGAÇÕES</div>
-      </div>
-      <div class="trait-box" style="position:relative;padding-bottom:18px;">
-        <textarea id="flaws-text" class="editable-area" style="min-height:50px;" placeholder="Defeitos..."></textarea>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">DEFEITOS</div>
-      </div>
-
-      <!-- Racial/Class Features preview (compact) -->
-      <div class="sheet-box" style="padding-bottom:18px;position:relative;flex:1;">
-        <div id="features-p1" style="overflow-y:auto;max-height:220px;">
-          <!-- filled by JS from char.features for first 2 features -->
-        </div>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">CARACTERÍSTICAS E HABILIDADES</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <div style="display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:6px;border-top:2px solid var(--border);">
-    <div class="passive-box" id="passive-perception">14</div>
-    <div style="font-size:12px;color:var(--ink);font-family:'Cinzel',serif;text-transform:uppercase;letter-spacing:0.05em;">SABEDORIA PASSIVA (PERCEPÇÃO)</div>
-
-    <div style="flex:1;"></div>
-
-    <div class="sheet-box" style="flex:2;padding-bottom:18px;position:relative;min-height:70px;">
-      <textarea id="langs-prof-text" class="editable-area" style="min-height:54px;font-size:12px;"></textarea>
-      <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">IDIOMAS E OUTRAS PROFICIÊNCIAS</div>
-    </div>
-  </div>
-</div>
-
-
-<!-- ══════════════════════════════════════════════════════════ -->
-<!--  PAGE 2 — PERSONAGEM                                      -->
-<!-- ══════════════════════════════════════════════════════════ -->
-<div id="page2" class="page sheet-paper hidden">
-
-  <!-- Header: Name + Physical -->
-  <div style="margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--border);">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
-      <div class="dnd-logo" style="font-size:18px;">D&amp;D</div>
-      <input id="char-name-p2" class="char-name-display" placeholder="Nome do Personagem" style="max-width:260px;">
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr) repeat(3,1fr);gap:4px 14px;align-items:end;">
-      <div class="meta-field"><input id="app-age" class="editable-field" placeholder="22 anos"><div class="section-label">IDADE</div></div>
-      <div class="meta-field"><input id="app-height" class="editable-field" placeholder="1,02 m"><div class="section-label">ALTURA</div></div>
-      <div class="meta-field"><input id="app-weight" class="editable-field" placeholder="29 kg"><div class="section-label">PESO</div></div>
-      <div class="meta-field"><input id="app-eyes" class="editable-field" placeholder="negros brilhantes"><div class="section-label">OLHOS</div></div>
-      <div class="meta-field"><input id="app-skin" class="editable-field" placeholder="cinza escuro"><div class="section-label">PELE</div></div>
-      <div class="meta-field"><input id="app-hair" class="editable-field" placeholder="pelagem curta"><div class="section-label">CABELOS</div></div>
-    </div>
-  </div>
-
-  <!-- 3-col layout -->
-  <div style="display:grid;grid-template-columns:220px 1fr 220px;gap:8px;align-items:start;">
-
-    <!-- Col 1: Appearance + Backstory -->
-    <div style="display:flex;flex-direction:column;gap:6px;">
-      <div class="sheet-box" style="padding-bottom:18px;position:relative;min-height:200px;">
-        <!-- Portrait -->
-        <div id="portrait-area" style="width:100%;height:160px;border:1px dashed var(--border-light);display:flex;align-items:center;justify-content:center;margin-bottom:4px;border-radius:3px;cursor:pointer;color:var(--border-light);font-size:12px;font-style:italic;" onclick="document.getElementById('portrait-upload').click()">
-          Clique para adicionar retrato
-        </div>
-        <input type="file" id="portrait-upload" accept="image/*" style="display:none">
-        <textarea id="app-desc" class="editable-area" style="min-height:50px;font-size:12px;" placeholder="Descrição física..."></textarea>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">APARÊNCIA DO PERSONAGEM</div>
-      </div>
-      <div class="sheet-box" style="padding-bottom:18px;position:relative;flex:1;min-height:160px;">
-        <textarea id="backstory-text" class="editable-area" style="min-height:140px;" placeholder="História do personagem..."></textarea>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">HISTÓRIA DO PERSONAGEM</div>
-      </div>
-    </div>
-
-    <!-- Col 2: Allies + Other Features -->
-    <div style="display:flex;flex-direction:column;gap:6px;">
-      <div class="sheet-box" style="padding-bottom:18px;position:relative;min-height:200px;">
-        <!-- Allies org portrait placeholder -->
-        <div style="width:100%;height:80px;border:1px dashed var(--border-light);display:flex;align-items:center;justify-content:center;margin-bottom:4px;border-radius:3px;color:var(--border-light);font-size:12px;font-style:italic;">Símbolo / Brasão</div>
-        <textarea id="allies-text" class="editable-area" style="min-height:100px;" placeholder="Aliados e organizações..."></textarea>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">ALIADOS E ORGANIZAÇÕES</div>
-      </div>
-      <div class="sheet-box" style="padding-bottom:18px;position:relative;flex:1;min-height:280px;">
-        <div id="features-container"></div>
-        <button id="add-feature" style="font-size:12px;color:var(--border-light);background:transparent;border:1px dashed var(--border-light);border-radius:3px;padding:1px 6px;cursor:pointer;margin-top:3px;">+ característica</button>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);white-space:nowrap;">OUTRAS CARACTERÍSTICAS E HABILIDADES</div>
-      </div>
-    </div>
-
-    <!-- Col 3: Treasure -->
-    <div style="display:flex;flex-direction:column;gap:6px;">
-      <div class="sheet-box" style="padding-bottom:18px;position:relative;min-height:200px;">
-        <textarea id="treasure-text" class="editable-area" style="min-height:160px;" placeholder="Tesouro e itens especiais..."></textarea>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">TESOURO</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- ══════════════════════════════════════════════════════════ -->
-<!--  PAGE 3 — MAGIAS                                          -->
-<!-- ══════════════════════════════════════════════════════════ -->
-<div id="page3" class="page sheet-paper hidden">
-
-  <!-- Header -->
-  <div style="margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--border);">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
-      <div class="dnd-logo" style="font-size:18px;">D&amp;D</div>
-      <div style="flex:1">
-        <input id="spell-class" class="char-name-display" placeholder="Classe de Conjurador" style="font-size:16px;">
-      </div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,140px);gap:8px;">
-      <div class="meta-field">
-        <input id="spell-ability" class="editable-field" placeholder="—">
-        <div class="section-label">HABILIDADE CHAVE</div>
-      </div>
-      <div class="meta-field">
-        <input id="spell-dc" class="editable-field" type="number" placeholder="—">
-        <div class="section-label">CD DO TESTE DE RESISTÊNCIA</div>
-      </div>
-      <div class="meta-field">
-        <input id="spell-atk" class="editable-field" type="number" placeholder="—">
-        <div class="section-label">BÔNUS DE ATAQUE DE MAGIA</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 3-col spell grid -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:start;">
-
-    <!-- Col 1: Cantrips + Level 1 + Level 2 -->
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <!-- Cantrips -->
-      <div class="sheet-box" style="padding-bottom:18px;position:relative;">
-        <div class="spell-level-header">
-          <div class="spell-level-num">0</div>
-          <div class="spell-slots-area" style="font-style:italic;font-size:12px;">Truques</div>
-        </div>
-        <div id="cantrips-list"></div>
-        <div class="section-label" style="position:absolute;bottom:2px;left:50%;transform:translateX(-50%);">TRUQUES</div>
-      </div>
-
-      <!-- Level 1 -->
-      <div class="sheet-box">
-        <div class="spell-level-header">
-          <div class="spell-level-num">1</div>
-          <div class="spell-slots-area">
-            <span style="font-size:11px;opacity:0.7;">Total:</span>
-            <input id="spell-total-1" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
-            <input id="spell-used-1" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-          </div>
-        </div>
-        <div id="spells-lvl-1"></div>
-      </div>
-
-      <!-- Level 2 -->
-      <div class="sheet-box">
-        <div class="spell-level-header">
-          <div class="spell-level-num">2</div>
-          <div class="spell-slots-area">
-            <span style="font-size:11px;opacity:0.7;">Total:</span>
-            <input id="spell-total-2" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
-            <input id="spell-used-2" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-          </div>
-        </div>
-        <div id="spells-lvl-2"></div>
-      </div>
-    </div>
-
-    <!-- Col 2: Levels 3–5 -->
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <!-- Level 3 -->
-      <div class="sheet-box">
-        <div class="spell-level-header">
-          <div class="spell-level-num">3</div>
-          <div class="spell-slots-area">
-            <span style="font-size:11px;opacity:0.7;">Total:</span>
-            <input id="spell-total-3" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
-            <input id="spell-used-3" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-          </div>
-        </div>
-        <div id="spells-lvl-3"></div>
-      </div>
-
-      <!-- Level 4 -->
-      <div class="sheet-box">
-        <div class="spell-level-header">
-          <div class="spell-level-num">4</div>
-          <div class="spell-slots-area">
-            <span style="font-size:11px;opacity:0.7;">Total:</span>
-            <input id="spell-total-4" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
-            <input id="spell-used-4" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-          </div>
-        </div>
-        <div id="spells-lvl-4"></div>
-      </div>
-
-      <!-- Level 5 -->
-      <div class="sheet-box">
-        <div class="spell-level-header">
-          <div class="spell-level-num">5</div>
-          <div class="spell-slots-area">
-            <span style="font-size:11px;opacity:0.7;">Total:</span>
-            <input id="spell-total-5" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
-            <input id="spell-used-5" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-          </div>
-        </div>
-        <div id="spells-lvl-5"></div>
-      </div>
-    </div>
-
-    <!-- Col 3: Levels 6–9 -->
-    <div style="display:flex;flex-direction:column;gap:8px;">
-      <!-- Level 6 -->
-      <div class="sheet-box">
-        <div class="spell-level-header">
-          <div class="spell-level-num">6</div>
-          <div class="spell-slots-area">
-            <span style="font-size:11px;opacity:0.7;">Total:</span>
-            <input id="spell-total-6" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
-            <input id="spell-used-6" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-          </div>
-        </div>
-        <div id="spells-lvl-6"></div>
-      </div>
-
-      <!-- Level 7 -->
-      <div class="sheet-box">
-        <div class="spell-level-header">
-          <div class="spell-level-num">7</div>
-          <div class="spell-slots-area">
-            <span style="font-size:11px;opacity:0.7;">Total:</span>
-            <input id="spell-total-7" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
-            <input id="spell-used-7" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-          </div>
-        </div>
-        <div id="spells-lvl-7"></div>
-      </div>
-
-      <!-- Level 8 -->
-      <div class="sheet-box">
-        <div class="spell-level-header">
-          <div class="spell-level-num">8</div>
-          <div class="spell-slots-area">
-            <span style="font-size:11px;opacity:0.7;">Total:</span>
-            <input id="spell-total-8" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
-            <input id="spell-used-8" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-          </div>
-        </div>
-        <div id="spells-lvl-8"></div>
-      </div>
-
-      <!-- Level 9 -->
-      <div class="sheet-box">
-        <div class="spell-level-header">
-          <div class="spell-level-num">9</div>
-          <div class="spell-slots-area">
-            <span style="font-size:11px;opacity:0.7;">Total:</span>
-            <input id="spell-total-9" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-            <span style="font-size:11px;opacity:0.7;margin-left:4px;">Usados:</span>
-            <input id="spell-used-9" type="number" min="0" max="9" style="width:22px;background:transparent;border:none;border-bottom:1px solid var(--border-light);outline:none;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:var(--ink);text-align:center;">
-          </div>
-        </div>
-        <div id="spells-lvl-9"></div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- ── Scripts ─────────────────────────────────────────────── -->
 <script src="character-data.js"></script>
 <script src="calculations.js"></script>
 <script src="storage.js"></script>
 <script src="app.js"></script>
-
-<script>
-  // Portrait upload
-  document.getElementById("portrait-upload")?.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const area = document.getElementById("portrait-area");
-      area.innerHTML = `<img src="${ev.target.result}" style="width:100%;height:160px;object-fit:cover;border-radius:3px;">`;
-      char.appearance.portrait = ev.target.result;
-      markDirty();
-    };
-    reader.readAsDataURL(file);
-  });
-
-  // Restore portrait if saved
-  document.addEventListener("DOMContentLoaded", () => {
-    if (char.appearance?.portrait) {
-      const area = document.getElementById("portrait-area");
-      if (area) area.innerHTML = `<img src="${char.appearance.portrait}" style="width:100%;height:160px;object-fit:cover;border-radius:3px;">`;
-    }
-
-    // Features on page 1 (compact view)
-    const p1feat = document.getElementById("features-p1");
-    if (p1feat) {
-      char.features.slice(0, 3).forEach((f) => {
-        const d = document.createElement("div");
-        d.className = "feature-entry";
-        d.innerHTML = `<div class="feature-name">${f.name}</div><div class="feature-desc">${f.description}</div>`;
-        p1feat.appendChild(d);
-      });
-    }
-  });
-</script>
-
 </body>
 </html>
