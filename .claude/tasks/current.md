@@ -1,35 +1,42 @@
-# Sprint atual — Fechar V1 + Iniciar V2
+# Sprint atual — V2: Campaign Memory
 
-## V1 — Pendencias (Character Hub)
+## V1 — Concluída ✓
 
-- [ ] Condicoes no Combat Dashboard (Envenenado, Amedrontado, Paralisado...)
+- [x] Condições no Combat Dashboard (Cego, Envenenado, Paralisado, Amedrontado...)
+- [x] Atalhos de teclado (S=salvar, C=combate, N=notas, O=visão geral)
+- [x] PWA: manifest.json + service worker básico
+- [x] Dark mode, offline-first, export/import JSON, auto-save
+
+**Movido para início de V2 (pré-requisitos):**
 - [ ] Migrar para TypeScript + Vite (estrutura modular)
 - [ ] Refatorar LocalStorage: `character` → `campaign` (container top-level)
-- [ ] PWA: manifest.json + service worker basico
-- [ ] Atalhos de teclado (pelo menos: S = salvar, N = notas, C = combate)
+- [ ] Navegação principal refatorada para suportar novos módulos
 
-## V2 — Proximo modulo a implementar
+---
 
-Ordem: **Journal → NPC Database → Quest Tracker**
+## V2 — Campaign Memory
 
-### Pre-requisitos para V2
-- [ ] Estrutura de Campaign no LocalStorage resolvida (V1 pendencia acima)
-- [ ] Navegacao principal refatorada para suportar novos modulos
+Ordem: **TypeScript/Vite + Campaign model → Journal → NPC Database → Quest Tracker**
+
+### Pré-requisitos (fazer primeiro)
+- [ ] Migrar para TypeScript + Vite
+- [ ] Estrutura de Campaign no LocalStorage
+- [ ] Navegação principal refatorada
 
 ### Session Journal (spec 002)
 - [ ] Wireframe aprovado
 - [ ] Componente SessionCard
 - [ ] Componente Timeline
-- [ ] CRUD de sessoes
+- [ ] CRUD de sessões
 - [ ] Busca por texto
 - [ ] Filtro por tags
 
 ### NPC Database (spec 003)
 - [ ] Componente NPCCard com status badge
 - [ ] CRUD de NPCs
-- [ ] Filtro por status e faccao
+- [ ] Filtro por status e facção
 
 ### Quest Tracker (spec 004)
 - [ ] Componente QuestCard
 - [ ] Objetivos checkables com progresso
-- [ ] Visao de quest principal em destaque
+- [ ] Visão de quest principal em destaque

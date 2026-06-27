@@ -1,3 +1,10 @@
+// ─── Conditions ───────────────────────────────────────────────
+const CONDITIONS = [
+  "Cego", "Enfeitiçado", "Ensurdecido", "Amedrontado", "Agarrado",
+  "Incapacitado", "Invisível", "Paralisado", "Petrificado", "Envenenado",
+  "Caído", "Restrito", "Atordoado", "Inconsciente", "Exausto",
+];
+
 // ─── State ────────────────────────────────────────────────────
 let char = Storage.load() || JSON.parse(JSON.stringify(DEFAULT_CHARACTER));
 let isDark = localStorage.getItem("dnd_dark") !== "0";
@@ -383,8 +390,40 @@ function renderCombat() {
   if (hdEl) hdEl.value = char.combat.hitDice.total;
 
   renderDeathSaves();
+  renderConditions();
   renderAttacks();
   updateHPDisplay();
+}
+
+function renderConditions() {
+  const grid = $("#conditions-grid");
+  if (!grid) return;
+
+  if (!grid.dataset.built) {
+    grid.dataset.built = "1";
+    grid.innerHTML = "";
+    CONDITIONS.forEach((cond) => {
+      const btn = document.createElement("button");
+      btn.className = "condition-badge";
+      btn.dataset.cond = cond;
+      btn.textContent = cond;
+      btn.addEventListener("click", () => {
+        if (!char.combat.conditions) char.combat.conditions = [];
+        const idx = char.combat.conditions.indexOf(cond);
+        if (idx === -1) char.combat.conditions.push(cond);
+        else char.combat.conditions.splice(idx, 1);
+        btn.classList.toggle("active", char.combat.conditions.includes(cond));
+        markDirty();
+      });
+      grid.appendChild(btn);
+    });
+  }
+
+  const active = char.combat.conditions || [];
+  CONDITIONS.forEach((cond) => {
+    const btn = grid.querySelector(`[data-cond="${CSS.escape(cond)}"]`);
+    if (btn) btn.classList.toggle("active", active.includes(cond));
+  });
 }
 
 function syncCombatAC() { const el = $("#combat-ac"); if (el) el.value = char.combat.ac; }
@@ -861,6 +900,25 @@ function escHtml(str) {
     .replace(/>/g, "&gt;");
 }
 
+// ─── Keyboard Shortcuts ───────────────────────────────────────
+function initKeyboard() {
+  document.addEventListener("keydown", (e) => {
+    if (e.target.matches("input, textarea, select")) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const navViews = { c: "combat", n: "notes", o: "overview", s: null };
+    if (e.key === "s" || e.key === "S") {
+      Storage.save(char);
+      showSaved(true);
+      return;
+    }
+    const view = navViews[e.key.toLowerCase()];
+    if (view) {
+      const btn = document.querySelector(`.nav-btn[data-view="${view}"]`);
+      if (btn) btn.click();
+    }
+  });
+}
+
 // ─── Render All ───────────────────────────────────────────────
 function renderAll() {
   // Reset bound state so fields re-bind on next render
@@ -894,5 +952,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initNav();
   initToolbar();
   initPortraitUpload();
+  initKeyboard();
   renderAll();
 });

@@ -70,6 +70,7 @@ const DEFAULT_CHARACTER = {
     hp: { max: 10, current: 10, temp: 0 },
     hitDice: { total: "1d8", remaining: "1d8" },
     deathSaves: { successes: 0, failures: 0 },
+    conditions: [],
   },
 
   attacks: [
