@@ -1,17 +1,18 @@
-const Calc = (() => {
-  function modifier(score) {
+import type { AttrKey, Character } from "./types";
+
+function modifier(score: number): number {
     return Math.floor((score - 10) / 2);
   }
 
-  function proficiencyBonus(level) {
+function proficiencyBonus(level: number): number {
     return Math.ceil(level / 4) + 1;
   }
 
-  function formatBonus(value) {
+function formatBonus(value: number): string {
     return value >= 0 ? `+${value}` : `${value}`;
   }
 
-  function skillBonus(char, skillKey) {
+function skillBonus(char: Character, skillKey: string): number {
     const skill = char.skills[skillKey];
     if (!skill) return 0;
     const base = modifier(char.attributes[skill.attr]);
@@ -21,45 +22,45 @@ const Calc = (() => {
     return base;
   }
 
-  function savingThrowBonus(char, attr) {
+function savingThrowBonus(char: Character, attr: AttrKey): number {
     const base = modifier(char.attributes[attr]);
     const prof = proficiencyBonus(char.meta.level);
     return char.savingThrows[attr]?.proficient ? base + prof : base;
   }
 
-  function passivePerception(char) {
+function passivePerception(char: Character): number {
     return 10 + skillBonus(char, "perception");
   }
 
-  function initiative(char) {
+function initiative(char: Character): number {
     return modifier(char.attributes.dex);
   }
 
-  function allModifiers(char) {
-    const mods = {};
-    for (const attr of ["str", "dex", "con", "int", "wis", "cha"]) {
+function allModifiers(char: Character): Record<AttrKey, number> {
+    const mods = {} as Record<AttrKey, number>;
+    for (const attr of ["str", "dex", "con", "int", "wis", "cha"] as AttrKey[]) {
       mods[attr] = modifier(char.attributes[attr]);
     }
     return mods;
   }
 
-  function allSavingThrows(char) {
-    const saves = {};
-    for (const attr of ["str", "dex", "con", "int", "wis", "cha"]) {
+function allSavingThrows(char: Character): Record<AttrKey, number> {
+    const saves = {} as Record<AttrKey, number>;
+    for (const attr of ["str", "dex", "con", "int", "wis", "cha"] as AttrKey[]) {
       saves[attr] = savingThrowBonus(char, attr);
     }
     return saves;
   }
 
-  function allSkills(char) {
-    const result = {};
+function allSkills(char: Character): Record<string, number> {
+    const result: Record<string, number> = {};
     for (const key of Object.keys(char.skills)) {
       result[key] = skillBonus(char, key);
     }
     return result;
   }
 
-  return {
+export const Calc = {
     modifier,
     proficiencyBonus,
     formatBonus,
@@ -71,4 +72,3 @@ const Calc = (() => {
     allSavingThrows,
     allSkills,
   };
-})();

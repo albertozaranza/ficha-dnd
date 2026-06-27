@@ -8,9 +8,9 @@
 - [x] Dark mode, offline-first, export/import JSON, auto-save
 
 **Movido para início de V2 (pré-requisitos):**
-- [ ] Migrar para TypeScript + Vite (estrutura modular)
-- [ ] Refatorar LocalStorage: `character` → `campaign` (container top-level)
-- [ ] Navegação principal refatorada para suportar novos módulos
+- [x] Migrar para TypeScript + Vite (estrutura modular)
+- [x] Refatorar LocalStorage: `character` → `campaign` (container top-level)
+- [x] Navegação principal refatorada para suportar novos módulos
 
 ---
 
@@ -19,9 +19,9 @@
 Ordem: **TypeScript/Vite + Campaign model → Journal → NPC Database → Quest Tracker**
 
 ### Pré-requisitos (fazer primeiro)
-- [ ] Migrar para TypeScript + Vite
-- [ ] Estrutura de Campaign no LocalStorage
-- [ ] Navegação principal refatorada
+- [x] Migrar para TypeScript + Vite
+- [x] Estrutura de Campaign no LocalStorage
+- [x] Navegação principal refatorada
 
 ### Session Journal (spec 002)
 - [ ] Wireframe aprovado

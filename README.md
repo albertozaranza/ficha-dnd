@@ -1,10 +1,21 @@
 # Ficha D&D 5e
 
-Gerador de ficha de personagem de **Dungeons & Dragons 5ª Edição** — 100% offline, sem dependências de servidor.
+Gerenciador pessoal de personagem e campanha para **Dungeons & Dragons 5ª Edição** — offline-first, com dados persistidos no navegador.
 
 ## Como usar
 
-Abra `src/index.html` no navegador. Não é necessário servidor, build ou instalação.
+Instale e rode o servidor local:
+
+```bash
+npm install
+npm run dev
+```
+
+Para gerar a versão de produção:
+
+```bash
+npm run build
+```
 
 ## Funcionalidades
 
@@ -13,27 +24,31 @@ Abra `src/index.html` no navegador. Não é necessário servidor, build ou insta
   - Personagem — aparência, história, aliados, características raciais/classe, tesouro
   - Magias — truques, espaços de magia nível 1–9
 - **Cálculos automáticos** — modificadores, bônus de proficiência, expertise, percepção passiva, iniciativa
-- **Persistência automática** via `localStorage` com debounce de 300ms
-- **Export / Import** em JSON
+- **Persistência automática** via `localStorage` com container top-level de campanha
+- **Migração automática** do storage legado `dnd5e_character` para `dnd5e_campaign`
+- **Export / Import** em JSON de campanha
 - **Dark mode** e **impressão otimizada**
 
 ## Stack
 
 - HTML5
-- JavaScript ES2022 (sem framework)
+- TypeScript
+- Vite
 - TailwindCSS via CDN
 - Persistência via `localStorage`
 
 ## Estrutura
 
 ```
-src/
-├── index.html          — HTML das 3 páginas
-├── character-data.js   — Dados do personagem (pré-carregado)
-├── calculations.js     — Regras D&D 5e (modificadores, proficiência…)
-├── storage.js          — localStorage: salvar, carregar, exportar, importar
-├── app.js              — Render e interação
-└── styles.css          — Estética da ficha (fontes, bordas, dark mode)
+├── index.html          — Entrada Vite
+├── public/             — Manifest e service worker
+└── src/
+    ├── main.ts         — Render, navegação e interação
+    ├── character-data.ts — Dados do personagem (pré-carregado)
+    ├── calculations.ts — Regras D&D 5e (modificadores, proficiência…)
+    ├── storage.ts      — Campaign no localStorage, exportar/importar
+    ├── types.ts        — Tipos compartilhados
+    └── styles.css      — Estética da ficha (fontes, bordas, dark mode)
 ```
 
 ## Personagem de exemplo

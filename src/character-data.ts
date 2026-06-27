@@ -1,4 +1,6 @@
-const DEFAULT_CHARACTER = {
+import type { Character } from "./types";
+
+export const DEFAULT_CHARACTER: Character = {
   meta: {
     name: "Skritch Cauda-de-Ferro",
     class: "Ladino",

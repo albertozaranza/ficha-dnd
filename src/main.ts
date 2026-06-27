@@ -1,3 +1,8 @@
+import "./styles.css";
+import { Calc } from "./calculations";
+import { Storage } from "./storage";
+import type { AttrKey, Campaign, Character } from "./types";
+
 // ─── Conditions ───────────────────────────────────────────────
 const CONDITIONS = [
   "Cego", "Enfeitiçado", "Ensurdecido", "Amedrontado", "Agarrado",
@@ -6,20 +11,22 @@ const CONDITIONS = [
 ];
 
 // ─── State ────────────────────────────────────────────────────
-let char = Storage.load() || JSON.parse(JSON.stringify(DEFAULT_CHARACTER));
+let campaign: Campaign = Storage.load();
+let char: Character = campaign.character;
 let isDark = localStorage.getItem("dnd_dark") !== "0";
 
 // ─── Helpers ──────────────────────────────────────────────────
-const $ = (sel, ctx = document) => ctx.querySelector(sel);
-const $$ = (sel, ctx = document) => ctx.querySelectorAll(sel);
-const fmt = (v) => Calc.formatBonus(v);
+const $ = (sel: string, ctx: ParentNode = document): any => ctx.querySelector(sel);
+const $$ = (sel: string, ctx: ParentNode = document): any[] => Array.from(ctx.querySelectorAll(sel));
+const fmt = (v: number) => Calc.formatBonus(v);
 
-const ATTR_KEYS = ["str", "dex", "con", "int", "wis", "cha"];
-const ATTR_ABBR = { str: "FOR", dex: "DES", con: "CON", int: "INT", wis: "SAB", cha: "CAR" };
-const ATTR_FULL = { str: "Força", dex: "Destreza", con: "Constituição", int: "Inteligência", wis: "Sabedoria", cha: "Carisma" };
-const SKILL_GROUPS = {
+const ATTR_KEYS: AttrKey[] = ["str", "dex", "con", "int", "wis", "cha"];
+const ATTR_ABBR: Record<AttrKey, string> = { str: "FOR", dex: "DES", con: "CON", int: "INT", wis: "SAB", cha: "CAR" };
+const ATTR_FULL: Record<AttrKey, string> = { str: "Força", dex: "Destreza", con: "Constituição", int: "Inteligência", wis: "Sabedoria", cha: "Carisma" };
+const SKILL_GROUPS: Record<AttrKey, string[]> = {
   str: ["athletics"],
   dex: ["acrobatics", "sleightOfHand", "stealth"],
+  con: [],
   int: ["arcana", "history", "investigation", "nature", "religion"],
   wis: ["animalHandling", "insight", "medicine", "perception", "survival"],
   cha: ["deception", "intimidation", "performance", "persuasion"],
@@ -37,11 +44,41 @@ function showSaved(ok) {
 }
 
 function markDirty() {
-  Storage.scheduleSave(char, showSaved);
+  campaign.character = char;
+  campaign.name = char.meta.name ? `${char.meta.name} Campaign` : campaign.name;
+  Storage.scheduleSave(campaign, showSaved);
 }
 
 // ─── Navigation ───────────────────────────────────────────────
+type NavItem = {
+  id: string;
+  label: string;
+  icon: string;
+};
+
+type FieldBinding = [string, () => any, (value: any) => void];
+
+const NAV_ITEMS: NavItem[] = [
+  { id: "overview", label: "Visão Geral", icon: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>' },
+  { id: "combat", label: "Combate", icon: '<path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6 2 2-6 6-2-2z"/><path d="M3 21l3.75-3.75"/>' },
+  { id: "skills", label: "Perícias", icon: '<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/>' },
+  { id: "equipment", label: "Equipamento", icon: '<path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>' },
+  { id: "features", label: "Habilidades", icon: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' },
+  { id: "spells", label: "Magias", icon: '<path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7l3-7z"/>' },
+  { id: "character", label: "Personagem", icon: '<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>' },
+  { id: "notes", label: "Notas", icon: '<path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>' },
+];
+
 function initNav() {
+  const nav = $(".sidebar-nav");
+  if (!nav) return;
+  nav.innerHTML = NAV_ITEMS.map((item, index) => `
+    <button class="nav-btn ${index === 0 ? "active" : ""}" data-view="${item.id}">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">${item.icon}</svg>
+      ${item.label}
+    </button>
+  `).join("");
+
   $$(".nav-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       $$(".nav-btn").forEach((b) => b.classList.remove("active"));
@@ -122,7 +159,7 @@ function updateAvatar() {
 
 // ─── Overview: Meta Strip ─────────────────────────────────────
 function renderMeta() {
-  const fields = [
+  const fields: FieldBinding[] = [
     ["#meta-class",    () => char.meta.class,      (v) => { char.meta.class = v; updateHeroText(); }],
     ["#meta-subclass", () => char.meta.subclass,   (v) => { char.meta.subclass = v; updateHeroText(); }],
     ["#meta-level",    () => char.meta.level,      (v) => { char.meta.level = parseInt(v)||1; updateHeroText(); updateXP(); renderProfBonus(); renderAttributes(); renderSavingThrows(); renderSkills(); }],
@@ -138,12 +175,13 @@ function renderMeta() {
     el.addEventListener("input", () => { setter(el.value); markDirty(); });
   }
   // Refresh values
-  [["#meta-class", () => char.meta.class],
+  const refreshFields: Array<[string, () => any]> = [["#meta-class", () => char.meta.class],
    ["#meta-subclass", () => char.meta.subclass],
    ["#meta-level", () => char.meta.level],
    ["#meta-bg", () => char.meta.background],
    ["#meta-align", () => char.meta.alignment],
-   ["#meta-xp", () => char.meta.experience]].forEach(([sel, g]) => {
+   ["#meta-xp", () => char.meta.experience]];
+  refreshFields.forEach(([sel, g]) => {
     const el = $(sel);
     if (el) el.value = g();
   });
@@ -297,7 +335,7 @@ function renderPassivePerception() {
 
 // ─── Personality ──────────────────────────────────────────────
 function renderPersonality() {
-  const map = [
+  const map: FieldBinding[] = [
     ["#ov-traits", () => char.personality.traits, (v) => (char.personality.traits = v)],
     ["#ov-ideals", () => char.personality.ideals, (v) => (char.personality.ideals = v)],
     ["#ov-bonds",  () => char.personality.bonds,  (v) => (char.personality.bonds = v)],
@@ -472,12 +510,12 @@ function renderAttacks() {
       <input class="attack-input" value="${escHtml(atk.type)}" placeholder="Tipo de dano">
       <button class="attack-remove-btn" title="Remover">×</button>
     `;
-    const [nameI, bonusI, dmgI, typeI] = card.querySelectorAll(".attack-input");
+    const [nameI, bonusI, dmgI, typeI] = Array.from(card.querySelectorAll<HTMLInputElement>(".attack-input"));
     nameI.addEventListener("input", () => { char.attacks[i].name = nameI.value; markDirty(); });
     bonusI.addEventListener("input", () => { char.attacks[i].bonus = bonusI.value; markDirty(); });
     dmgI.addEventListener("input", () => { char.attacks[i].damage = dmgI.value; markDirty(); });
     typeI.addEventListener("input", () => { char.attacks[i].type = typeI.value; markDirty(); });
-    card.querySelector(".attack-remove-btn").addEventListener("click", () => {
+    card.querySelector(".attack-remove-btn")?.addEventListener("click", () => {
       char.attacks.splice(i, 1);
       renderAttacks();
       markDirty();
@@ -614,9 +652,10 @@ function renderEquipment() {
       <input class="equipment-input" value="${escHtml(item)}" placeholder="Item...">
       <button class="equip-remove" title="Remover">×</button>
     `;
-    const inp = div.querySelector(".equipment-input");
+    const inp = div.querySelector<HTMLInputElement>(".equipment-input");
+    if (!inp) return;
     inp.addEventListener("input", () => { char.equipment[i] = inp.value; markDirty(); });
-    div.querySelector(".equip-remove").addEventListener("click", () => {
+    div.querySelector(".equip-remove")?.addEventListener("click", () => {
       char.equipment.splice(i, 1);
       renderEquipment();
       markDirty();
@@ -671,13 +710,16 @@ function renderFeatures() {
       </div>
     `;
     const hdr = card.querySelector(".feature-hdr");
+    if (!hdr) return;
     hdr.addEventListener("click", (e) => {
-      if (e.target.tagName === "INPUT") return;
+      if ((e.target as HTMLElement).tagName === "INPUT") return;
       card.classList.toggle("expanded");
     });
-    const nameEl = card.querySelector(".feature-name-input");
+    const nameEl = card.querySelector<HTMLInputElement>(".feature-name-input");
+    if (!nameEl) return;
     nameEl.addEventListener("input", () => { char.features[i].name = nameEl.value; markDirty(); });
-    const descEl = card.querySelector(".feature-desc-input");
+    const descEl = card.querySelector<HTMLTextAreaElement>(".feature-desc-input");
+    if (!descEl) return;
     descEl.addEventListener("input", () => { char.features[i].description = descEl.value; markDirty(); });
     list.appendChild(card);
   });
@@ -695,7 +737,7 @@ function renderFeatures() {
 
 // ─── Spells ───────────────────────────────────────────────────
 function renderSpells() {
-  const fields = [
+  const fields: FieldBinding[] = [
     ["#spell-class",   () => char.spellcasting.class,        (v) => (char.spellcasting.class = v)],
     ["#spell-ability", () => char.spellcasting.ability,      (v) => (char.spellcasting.ability = v)],
     ["#spell-dc",      () => char.spellcasting.saveDC || "", (v) => (char.spellcasting.saveDC = parseInt(v)||0)],
@@ -724,7 +766,8 @@ function renderCantrips() {
     const line = document.createElement("div");
     line.className = "spell-line";
     line.innerHTML = `<input class="spell-name-input" value="${escHtml(spell)}" placeholder="Truque...">`;
-    const inp = line.querySelector("input");
+    const inp = line.querySelector<HTMLInputElement>("input");
+    if (!inp) continue;
     inp.addEventListener("input", () => {
       char.spellcasting.cantrips[i] = inp.value;
       markDirty();
@@ -772,7 +815,8 @@ function renderSpellLevels() {
         <input class="spell-name-input" value="${escHtml(spell.name || "")}" placeholder="Magia...">
       `;
       const pip = line.querySelector(".spell-prep-dot");
-      const inp = line.querySelector("input");
+      const inp = line.querySelector<HTMLInputElement>("input");
+      if (!pip || !inp) continue;
       pip.addEventListener("click", () => {
         if (!slotData.spells[i]) slotData.spells[i] = { name: "", prepared: false };
         slotData.spells[i].prepared = !slotData.spells[i].prepared;
@@ -791,7 +835,7 @@ function renderSpellLevels() {
 
 // ─── Character View ───────────────────────────────────────────
 function renderCharacter() {
-  const fields = [
+  const fields: FieldBinding[] = [
     ["#app-age",    () => char.appearance.age,         (v) => (char.appearance.age = v)],
     ["#app-height", () => char.appearance.height,      (v) => (char.appearance.height = v)],
     ["#app-weight", () => char.appearance.weight,      (v) => (char.appearance.weight = v)],
@@ -864,16 +908,18 @@ function initToolbar() {
     applyTheme();
   });
   $("#btn-save")?.addEventListener("click", () => {
-    const ok = Storage.save(char);
+    campaign.character = char;
+    const ok = Storage.save(campaign);
     showSaved(ok);
   });
-  $("#btn-export")?.addEventListener("click", () => Storage.exportJSON(char));
+  $("#btn-export")?.addEventListener("click", () => Storage.exportJSON(campaign));
   $("#btn-import")?.addEventListener("click", () => $("#import-file")?.click());
   $("#import-file")?.addEventListener("change", async (e) => {
     if (!e.target.files[0]) return;
     try {
-      char = await Storage.importJSON(e.target.files[0]);
-      Storage.save(char);
+      campaign = await Storage.importJSON(e.target.files[0]);
+      char = campaign.character;
+      Storage.save(campaign);
       renderAll();
       showSaved(true);
     } catch {
@@ -882,8 +928,9 @@ function initToolbar() {
   });
   $("#btn-reset")?.addEventListener("click", () => {
     if (confirm("Resetar para os dados originais? Todas as alterações serão perdidas.")) {
-      char = JSON.parse(JSON.stringify(DEFAULT_CHARACTER));
-      Storage.save(char);
+      campaign = Storage.reset();
+      char = campaign.character;
+      Storage.save(campaign);
       renderAll();
       showSaved(true);
     }
@@ -903,17 +950,18 @@ function escHtml(str) {
 // ─── Keyboard Shortcuts ───────────────────────────────────────
 function initKeyboard() {
   document.addEventListener("keydown", (e) => {
-    if (e.target.matches("input, textarea, select")) return;
+    if ((e.target as HTMLElement).matches("input, textarea, select")) return;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const navViews = { c: "combat", n: "notes", o: "overview", s: null };
     if (e.key === "s" || e.key === "S") {
-      Storage.save(char);
+      campaign.character = char;
+      Storage.save(campaign);
       showSaved(true);
       return;
     }
     const view = navViews[e.key.toLowerCase()];
     if (view) {
-      const btn = document.querySelector(`.nav-btn[data-view="${view}"]`);
+      const btn = document.querySelector<HTMLButtonElement>(`.nav-btn[data-view="${view}"]`);
       if (btn) btn.click();
     }
   });
@@ -922,7 +970,7 @@ function initKeyboard() {
 // ─── Render All ───────────────────────────────────────────────
 function renderAll() {
   // Reset bound state so fields re-bind on next render
-  document.querySelectorAll("[data-bound]").forEach((el) => delete el.dataset.bound);
+  document.querySelectorAll<HTMLElement>("[data-bound]").forEach((el) => delete el.dataset.bound);
   // Reset built state for stats grid
   const grid = $("#stats-grid");
   if (grid) delete grid.dataset.built;
