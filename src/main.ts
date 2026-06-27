@@ -1,15 +1,8 @@
-import "./styles.css";
 import { Calc } from "./calculations";
 import { Storage } from "./storage";
-import type { AttrKey, Campaign, Character } from "./types";
+import type { Campaign, Character } from "./types";
 import { Journal } from "./journal";
-
-// ─── Conditions ───────────────────────────────────────────────
-const CONDITIONS = [
-  "Cego", "Enfeitiçado", "Ensurdecido", "Amedrontado", "Agarrado",
-  "Incapacitado", "Invisível", "Paralisado", "Petrificado", "Envenenado",
-  "Caído", "Restrito", "Atordoado", "Inconsciente", "Exausto",
-];
+import { CONDITIONS, ATTR_KEYS, ATTR_ABBR, ATTR_FULL, SKILL_GROUPS, XP_THRESHOLDS } from "./lib/constants";
 
 // ─── State ────────────────────────────────────────────────────
 let campaign: Campaign = Storage.load();
@@ -20,20 +13,6 @@ let isDark = localStorage.getItem("dnd_dark") !== "0";
 const $ = (sel: string, ctx: ParentNode = document): any => ctx.querySelector(sel);
 const $$ = (sel: string, ctx: ParentNode = document): any[] => Array.from(ctx.querySelectorAll(sel));
 const fmt = (v: number) => Calc.formatBonus(v);
-
-const ATTR_KEYS: AttrKey[] = ["str", "dex", "con", "int", "wis", "cha"];
-const ATTR_ABBR: Record<AttrKey, string> = { str: "FOR", dex: "DES", con: "CON", int: "INT", wis: "SAB", cha: "CAR" };
-const ATTR_FULL: Record<AttrKey, string> = { str: "Força", dex: "Destreza", con: "Constituição", int: "Inteligência", wis: "Sabedoria", cha: "Carisma" };
-const SKILL_GROUPS: Record<AttrKey, string[]> = {
-  str: ["athletics"],
-  dex: ["acrobatics", "sleightOfHand", "stealth"],
-  con: [],
-  int: ["arcana", "history", "investigation", "nature", "religion"],
-  wis: ["animalHandling", "insight", "medicine", "perception", "survival"],
-  cha: ["deception", "intimidation", "performance", "persuasion"],
-};
-const XP_THRESHOLDS = [0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000,
-  85000, 100000, 120000, 140000, 165000, 195000, 225000, 265000, 305000, 355000, Infinity];
 
 // ─── Save feedback ────────────────────────────────────────────
 function showSaved(ok) {
@@ -51,47 +30,7 @@ function markDirty() {
 }
 
 // ─── Navigation ───────────────────────────────────────────────
-type NavItem = {
-  id: string;
-  label: string;
-  icon: string;
-};
-
 type FieldBinding = [string, () => any, (value: any) => void];
-
-const NAV_ITEMS: NavItem[] = [
-  { id: "overview", label: "Visão Geral", icon: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>' },
-  { id: "combat", label: "Combate", icon: '<path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6 2 2-6 6-2-2z"/><path d="M3 21l3.75-3.75"/>' },
-  { id: "skills", label: "Perícias", icon: '<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/>' },
-  { id: "equipment", label: "Equipamento", icon: '<path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>' },
-  { id: "features", label: "Habilidades", icon: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' },
-  { id: "spells", label: "Magias", icon: '<path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7l3-7z"/>' },
-  { id: "character", label: "Personagem", icon: '<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>' },
-  { id: "notes", label: "Notas", icon: '<path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>' },
-  { id: "journal", label: "Diário", icon: '<path d="M3 5h14v14H3z"/><path d="M7 9h6"/>' },
-];
-
-function initNav() {
-  const nav = $(".sidebar-nav");
-  if (!nav) return;
-  nav.innerHTML = NAV_ITEMS.map((item, index) => `
-    <button class="nav-btn ${index === 0 ? "active" : ""}" data-view="${item.id}">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">${item.icon}</svg>
-      ${item.label}
-    </button>
-  `).join("");
-
-  $$(".nav-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      $$(".nav-btn").forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      const viewId = "view-" + btn.dataset.view;
-      $$(".view").forEach((v) => v.classList.remove("active"));
-      const view = $("#" + viewId);
-      if (view) view.classList.add("active");
-    });
-  });
-}
 
 // ─── Dark Mode ────────────────────────────────────────────────
 function applyTheme() {
@@ -635,10 +574,7 @@ function renderLanguagesProf() {
     char.proficiencies.tools?.length ? "Ferramentas: " + char.proficiencies.tools.join(", ") : "",
   ].filter(Boolean).join("\n");
   el.value = [langs ? "Idiomas: " + langs : "", profs].filter(Boolean).join("\n\n");
-  if (!el.dataset.bound) {
-    el.dataset.bound = "1";
-    el.addEventListener("input", () => { char._langsProf = el.value; markDirty(); });
-  }
+  // textarea is display-only; languages/proficiencies are edited elsewhere
 }
 
 // ─── Equipment ────────────────────────────────────────────────
@@ -888,13 +824,14 @@ function initPortraitUpload() {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (ev) => {
-      char.appearance = char.appearance || {};
-      char.appearance.portrait = ev.target.result;
+      const result = ev.target?.result;
+      if (typeof result !== "string") return;
+      char.appearance.portrait = result;
       updateAvatar();
       // Update character view portrait
       const img = $("#portrait-img");
       const placeholder = $("#portrait-placeholder");
-      if (img) { img.src = ev.target.result; img.style.display = "block"; }
+      if (img) { img.src = result; img.style.display = "block"; }
       if (placeholder) placeholder.style.display = "none";
       markDirty();
     };
@@ -949,25 +886,6 @@ function escHtml(str) {
     .replace(/>/g, "&gt;");
 }
 
-// ─── Keyboard Shortcuts ───────────────────────────────────────
-function initKeyboard() {
-  document.addEventListener("keydown", (e) => {
-    if ((e.target as HTMLElement).matches("input, textarea, select")) return;
-    if (e.metaKey || e.ctrlKey || e.altKey) return;
-    const navViews = { c: "combat", n: "notes", o: "overview", s: null };
-    if (e.key === "s" || e.key === "S") {
-      campaign.character = char;
-      Storage.save(campaign);
-      showSaved(true);
-      return;
-    }
-    const view = navViews[e.key.toLowerCase()];
-    if (view) {
-      const btn = document.querySelector<HTMLButtonElement>(`.nav-btn[data-view="${view}"]`);
-      if (btn) btn.click();
-    }
-  });
-}
 
 // ─── Render All ───────────────────────────────────────────────
 function renderAll() {
@@ -997,13 +915,45 @@ function renderAll() {
   Journal.render();
 }
 
-// ─── Boot ─────────────────────────────────────────────────────
-document.addEventListener("DOMContentLoaded", () => {
-  applyTheme();
-  initNav();
-  initToolbar();
+// ─── Boot (called by React App) ───────────────────────────────
+export function initViewsVanilla() {
   initPortraitUpload();
-  initKeyboard();
   Journal.init(campaign, markDirty);
   renderAll();
-});
+}
+
+export function initKeyboardVanilla(onSave: () => void) {
+  document.addEventListener("keydown", (e) => {
+    if ((e.target as HTMLElement).matches("input, textarea, select")) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === "s" || e.key === "S") {
+      onSave();
+      return;
+    }
+  });
+}
+
+export function saveNow(): boolean {
+  campaign.character = char;
+  return Storage.save(campaign);
+}
+
+export function exportNow() {
+  Storage.exportJSON(campaign);
+}
+
+export async function importNow(file: File): Promise<void> {
+  campaign = await Storage.importJSON(file);
+  char = campaign.character;
+  Storage.save(campaign);
+  renderAll();
+}
+
+export function resetNow() {
+  campaign = Storage.reset();
+  char = campaign.character;
+  Storage.save(campaign);
+  renderAll();
+}
+
+export { renderAll, campaign };

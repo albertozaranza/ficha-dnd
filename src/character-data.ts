@@ -170,6 +170,8 @@ export const DEFAULT_CHARACTER: Character = {
   treasure:
     "• 15 peças de ouro\n• Uma chave negra misteriosa (item de história)\n• Um anel de cobre roubado\n• Um dado de osso pertencente ao seu antigo clã",
 
+  notes: "",
+
   spellcasting: {
     class: "",
     ability: "",
