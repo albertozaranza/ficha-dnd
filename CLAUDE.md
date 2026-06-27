@@ -42,19 +42,19 @@ Sempre priorizar:
 
 ```text
 project/
-├── index.html
-├── app.js
-├── character-data.js
-├── storage.js
-├── calculations.js
-├── parser.js
-├── styles.css
-├── assets/
-│   └── references/
-│       ├── ficha.pdf
-│       └── personagem.md
+├── src/
+│   ├── index.html          ← HTML das 3 páginas (Ficha, Personagem, Magias)
+│   ├── character-data.js   ← Dados do personagem (objeto DEFAULT_CHARACTER)
+│   ├── calculations.js     ← Cálculos D&D 5e (modificadores, proficiência, perícias)
+│   ├── storage.js          ← localStorage: save, load, reset, export, import
+│   ├── app.js              ← Render de todas as seções + event listeners
+│   └── styles.css          ← Estética da ficha (fontes Cinzel/IM Fell, dark mode, print)
+├── .gitignore
+├── CLAUDE.md
 └── README.md
 ```
+
+O ponto de entrada é `src/index.html`. Não há build step — abrir direto no navegador.
 
 ---
 
