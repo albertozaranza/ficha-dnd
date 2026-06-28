@@ -94,7 +94,6 @@ export function SessionCard({ session }: SessionCardProps) {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const scheduleUpdate = useCallback((updater: (s: Session) => void) => {
-    updater(session);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => { updateSession(session.id, updater); }, 1000);
   }, [session, updateSession]);

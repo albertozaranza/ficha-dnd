@@ -75,7 +75,6 @@ function normalizeCampaign(data?: Record<string, any>): Campaign {
 
 function save(campaign: Campaign): boolean {
   try {
-    campaign.updatedAt = nowIso();
     localStorage.setItem(CAMPAIGN_KEY, JSON.stringify(campaign));
     return true;
   } catch {

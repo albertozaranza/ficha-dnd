@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { useCampaignStore } from "../../store/campaignStore";
 import { Calc } from "../../calculations";
 import { ATTR_KEYS, ATTR_FULL } from "../../lib/constants";
@@ -68,9 +69,9 @@ export function OverviewView() {
       {/* Meta Strip */}
       <div className="flex bg-(--bg-surface) border border-(--border) rounded-xl mb-6 overflow-hidden">
         {META_FIELDS.map((f, i) => (
-          <>
-            {i > 0 && <div key={`div-${i}`} className="w-px bg-(--border) shrink-0" />}
-            <div key={f.label} className="flex flex-col px-3.5 py-2.5 flex-1 min-w-0" style={f.style}>
+          <Fragment key={f.label}>
+            {i > 0 && <div className="w-px bg-(--border) shrink-0" />}
+            <div className="flex flex-col px-3.5 py-2.5 flex-1 min-w-0" style={f.style}>
               <input
                 className="bg-transparent border-none outline-none text-(--text-1) text-[13px] font-medium p-0 w-full min-w-0 focus:text-(--accent)"
                 type={f.type || "text"}
@@ -81,7 +82,7 @@ export function OverviewView() {
               />
               <span className="text-[9px] font-bold text-(--text-3) uppercase tracking-widest mt-0.75 whitespace-nowrap">{f.label}</span>
             </div>
-          </>
+          </Fragment>
         ))}
       </div>
 
