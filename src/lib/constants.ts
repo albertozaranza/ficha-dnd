@@ -54,10 +54,10 @@ export const NAV_ITEMS: NavItem[] = [
 export const EVENT_TAGS = ["NPC", "Local", "Quest", "Combate", "Revelação"] as const;
 export type EventTag = typeof EVENT_TAGS[number];
 
-export const EVENT_TAG_COLORS: Record<string, { bg: string; text: string }> = {
-  NPC:       { bg: "#7c6af7", text: "#fff" },
-  Local:     { bg: "#22c55e", text: "#fff" },
-  Quest:     { bg: "#f59e0b", text: "#000" },
-  Combate:   { bg: "#ef4444", text: "#fff" },
-  Revelação: { bg: "#06b6d4", text: "#fff" },
+export const TAG_COLOR: Record<EventTag, string> = {
+  NPC:       "#7c6af7",
+  Local:     "#22c55e",
+  Quest:     "#f59e0b",
+  Combate:   "#ef4444",
+  Revelação: "#06b6d4",
 };

@@ -13,13 +13,8 @@ import { FeaturesView } from "./components/views/FeaturesView";
 import { SpellsView } from "./components/views/SpellsView";
 import { CharacterView } from "./components/views/CharacterView";
 import { NotesView } from "./components/views/NotesView";
-import {
-  initViewsVanilla,
-  saveNow,
-  exportNow,
-  importNow,
-  resetNow,
-} from "./main";
+import { JournalView } from "./components/views/journal/JournalView";
+import { saveNow, exportNow, importNow, resetNow } from "./main";
 
 export default function App() {
   const activeView = useUIStore((s) => s.activeView);
@@ -30,26 +25,17 @@ export default function App() {
 
   useAutoSave();
 
-  // Apply theme on mount and when toggled
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark);
     document.documentElement.classList.toggle("light", !isDark);
   }, [isDark]);
 
-  // Switch active view by toggling CSS classes on vanilla view sections
   useEffect(() => {
-    document.querySelectorAll<HTMLElement>(".view").forEach((v) =>
-      v.classList.remove("active")
-    );
+    document.querySelectorAll<HTMLElement>(".view").forEach((v) => v.classList.remove("active"));
     document.getElementById(`view-${activeView}`)?.classList.add("active");
   }, [activeView]);
 
-  // Boot vanilla Journal rendering once on mount
-  useEffect(() => {
-    initViewsVanilla();
-  }, []);
-
-  // Portrait upload: update Zustand store when file is selected
+  // Portrait upload → Zustand
   useEffect(() => {
     const input = document.getElementById("portrait-upload") as HTMLInputElement | null;
     if (!input) return;
@@ -71,40 +57,27 @@ export default function App() {
 
   // Keyboard shortcuts
   useEffect(() => {
-    const navViews: Record<string, string> = {
-      c: "combat",
-      n: "notes",
-      o: "overview",
-    };
-
+    const navViews: Record<string, string> = { c: "combat", n: "notes", o: "overview" };
     function onKey(e: KeyboardEvent) {
       if ((e.target as HTMLElement).matches("input, textarea, select")) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
-
       if (e.key === "s" || e.key === "S") {
         const ok = saveNow();
         setSaveStatus(ok ? "saved" : "error");
         setTimeout(() => setSaveStatus("idle"), 1800);
         return;
       }
-
       const view = navViews[e.key.toLowerCase()];
       if (view) useUIStore.getState().setActiveView(view);
     }
-
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [setSaveStatus]);
 
-  // Toolbar action handlers passed to sidebar footer
   function handleSave() {
     const ok = saveNow();
     setSaveStatus(ok ? "saved" : "error");
     setTimeout(() => setSaveStatus("idle"), 1800);
-  }
-
-  function handleExport() {
-    exportNow();
   }
 
   async function handleImport(file: File) {
@@ -125,7 +98,7 @@ export default function App() {
     <>
       <Sidebar
         onSave={handleSave}
-        onExport={handleExport}
+        onExport={exportNow}
         onImport={handleImport}
         onReset={handleReset}
         onPrint={() => window.print()}
@@ -140,6 +113,7 @@ export default function App() {
           <SpellsView />
           <CharacterView />
           <NotesView />
+          <JournalView />
         </>,
         mainEl
       )}

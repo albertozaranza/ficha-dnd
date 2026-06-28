@@ -1246,6 +1246,12 @@ input[type=date] { color-scheme: dark; }
   margin-bottom: 8px;
   flex-wrap: wrap;
 }
+.session-date-input    { width: 140px; flex-shrink: 0; }
+.session-title-input   { flex: 1; }
+.session-xp-input      { width: 80px; flex-shrink: 0; }
+.session-gold-input    { width: 90px; flex-shrink: 0; }
+.session-participants-input { flex: 1; }
+
 .session-inline-fields input,
 .session-summary-input,
 .session-participants-input {
@@ -1318,7 +1324,9 @@ input[type=date] { color-scheme: dark; }
   font-weight: 600;
   padding: 2px 7px;
   border-radius: 999px;
-  border: 1px solid transparent;
+  border: 1px solid color-mix(in srgb, var(--tag-color, var(--accent)) 30%, transparent);
+  background: color-mix(in srgb, var(--tag-color, var(--accent)) 15%, transparent);
+  color: var(--tag-color, var(--accent));
   white-space: nowrap;
 }
 .event-tag-chip.sm { font-size: 10px; padding: 1px 5px; }
