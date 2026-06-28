@@ -41,43 +41,52 @@ export function OverviewView() {
 
   return (
     <section id="view-overview" className="view active">
-      <div className="view-header">
-        <h2 className="view-title">Visão Geral</h2>
-        <div className="badge-row">
-          <span className="badge accent">Prof {Calc.formatBonus(profBonus)}</span>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-7 pb-4 border-b border-(--border) flex-wrap gap-3">
+        <h2 className="font-cinzel text-[22px] font-bold text-(--text-1) tracking-[0.02em]">Visão Geral</h2>
+        <div className="flex gap-2 items-center flex-wrap">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-[20px] text-xs font-medium bg-(--accent-sub) text-(--accent) border border-(--accent) whitespace-nowrap">
+            Prof {Calc.formatBonus(profBonus)}
+          </span>
           <button
-            className={`badge inspiration-badge${char.meta.inspiration ? " lit" : ""}`}
+            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-[20px] text-xs font-medium border cursor-pointer transition-all duration-150 whitespace-nowrap ${
+              char.meta.inspiration
+                ? "bg-(--amber-sub) text-(--amber) border-(--amber)"
+                : "bg-(--bg-elevated) text-(--text-2) border-(--border)"
+            }`}
             title="Clique para alternar inspiração"
             onClick={() => updateCharacter((c) => { c.meta.inspiration = !c.meta.inspiration; })}
           >
             Inspiração
           </button>
-          <span className="badge">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-[20px] text-xs font-medium bg-(--bg-elevated) text-(--text-2) border border-(--border) whitespace-nowrap">
             Percepção Passiva: <strong>{passivePerception}</strong>
           </span>
         </div>
       </div>
 
-      <div className="meta-strip">
+      {/* Meta Strip */}
+      <div className="flex bg-(--bg-surface) border border-(--border) rounded-xl mb-6 overflow-hidden">
         {META_FIELDS.map((f, i) => (
           <>
-            {i > 0 && <div key={`div-${i}`} className="meta-divider" />}
-            <div key={f.label} className="meta-item" style={f.style}>
+            {i > 0 && <div key={`div-${i}`} className="w-px bg-(--border) shrink-0" />}
+            <div key={f.label} className="flex flex-col px-3.5 py-2.5 flex-1 min-w-0" style={f.style}>
               <input
-                className="meta-input"
+                className="bg-transparent border-none outline-none text-(--text-1) text-[13px] font-medium p-0 w-full min-w-0 focus:text-(--accent)"
                 type={f.type || "text"}
                 placeholder={f.placeholder}
                 value={f.getValue(char.meta) ?? ""}
                 onChange={(e) => updateCharacter((c) => f.setValue(c, e.target.value))}
                 style={f.type === "number" ? { textAlign: "center" } : undefined}
               />
-              <span className="meta-label">{f.label}</span>
+              <span className="text-[9px] font-bold text-(--text-3) uppercase tracking-widest mt-0.75 whitespace-nowrap">{f.label}</span>
             </div>
           </>
         ))}
       </div>
 
-      <div className="stats-grid">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-6 gap-2.5 mb-5 max-[1024px]:grid-cols-3">
         {ATTR_KEYS.map((key) => (
           <StatCard
             key={key}
@@ -92,60 +101,65 @@ export function OverviewView() {
         ))}
       </div>
 
-      <div className="quick-stats-row">
-        <div className="quick-card">
+      {/* Quick Stats */}
+      <div className="grid gap-2.5 mb-5 max-[1024px]:grid-cols-3" style={{ gridTemplateColumns: "100px 1fr 100px 110px 110px" }}>
+        <div className="bg-(--bg-surface) border border-(--border) rounded-2xl px-3 pt-4 pb-3 text-center">
           <input
-            className="quick-value"
-            type="number"
-            min={0}
-            max={30}
-            placeholder="14"
+            className="font-cinzel text-[28px] font-bold text-(--text-1) bg-transparent border-none outline-none w-full text-center block leading-none focus:text-(--accent)"
+            type="number" min={0} max={30} placeholder="14"
             value={char.combat.ac}
             onChange={(e) => updateCharacter((c) => { c.combat.ac = parseInt(e.target.value) || 10; })}
           />
-          <div className="quick-label">Classe de Armadura</div>
+          <div className="text-[9px] font-bold uppercase tracking-widest text-(--text-3) mt-2">Classe de Armadura</div>
         </div>
-        <div className="quick-card hp-quick-card">
-          <div className="hp-quick-nums">
-            <span className="hp-quick-cur" style={{ color: hpColor }}>{char.combat.hp.current}</span>
-            <span className="hp-quick-sep">/</span>
-            <span className="hp-quick-max">{char.combat.hp.max}</span>
+
+        <div className="bg-(--bg-surface) border border-(--border) rounded-2xl px-4 pt-3.5 pb-3 text-center">
+          <div className="flex items-baseline justify-center gap-0.5 mb-2">
+            <span className="font-cinzel text-[30px] font-bold leading-none" style={{ color: hpColor }}>{char.combat.hp.current}</span>
+            <span className="font-cinzel text-xl text-(--border-hi) mx-0.5">/</span>
+            <span className="font-cinzel text-lg font-semibold text-(--text-2) leading-none">{char.combat.hp.max}</span>
           </div>
-          <div className="hp-bar-track">
-            <div className="hp-bar-fill" style={{ width: `${hpPct}%`, background: hpColor }} />
+          <div className="h-1 bg-(--bg-active) rounded-sm overflow-hidden">
+            <div className="h-full rounded-sm transition-[width,background] duration-400" style={{ width: `${hpPct}%`, background: hpColor }} />
           </div>
-          <div className="quick-label">Pontos de Vida <span style={{ fontSize: 10, opacity: 0.6 }}>(editar em Combate)</span></div>
+          <div className="text-[9px] font-bold uppercase tracking-widest text-(--text-3) mt-2">
+            Pontos de Vida <span className="text-[10px] opacity-60">(editar em Combate)</span>
+          </div>
         </div>
-        <div className="quick-card">
-          <div className="quick-value-static">{initiative}</div>
-          <div className="quick-label">Iniciativa</div>
+
+        <div className="bg-(--bg-surface) border border-(--border) rounded-2xl px-3 pt-4 pb-3 text-center">
+          <div className="font-cinzel text-[28px] font-bold text-(--text-1) leading-none">{initiative}</div>
+          <div className="text-[9px] font-bold uppercase tracking-widest text-(--text-3) mt-2">Iniciativa</div>
         </div>
-        <div className="quick-card">
+
+        <div className="bg-(--bg-surface) border border-(--border) rounded-2xl px-3 pt-4 pb-3 text-center">
           <input
-            className="quick-value"
+            className="font-cinzel text-[28px] font-bold text-(--text-1) bg-transparent border-none outline-none w-full text-center block leading-none focus:text-(--accent)"
             placeholder="9m"
             value={char.combat.speed}
             onChange={(e) => updateCharacter((c) => { c.combat.speed = e.target.value; })}
           />
-          <div className="quick-label">Deslocamento</div>
+          <div className="text-[9px] font-bold uppercase tracking-widest text-(--text-3) mt-2">Deslocamento</div>
         </div>
-        <div className="quick-card">
+
+        <div className="bg-(--bg-surface) border border-(--border) rounded-2xl px-3 pt-4 pb-3 text-center">
           <input
-            className="quick-value"
+            className="font-cinzel text-[28px] font-bold text-(--text-1) bg-transparent border-none outline-none w-full text-center block leading-none focus:text-(--accent)"
             placeholder="1d8"
             value={char.combat.hitDice.total}
             onChange={(e) => updateCharacter((c) => { c.combat.hitDice.total = e.target.value; })}
           />
-          <div className="quick-label">Dados de Vida</div>
+          <div className="text-[9px] font-bold uppercase tracking-widest text-(--text-3) mt-2">Dados de Vida</div>
         </div>
       </div>
 
-      <div className="personality-grid">
+      {/* Personality */}
+      <div className="grid grid-cols-4 gap-2.5 max-[1024px]:grid-cols-2">
         {PERSONALITY_FIELDS.map((f) => (
-          <div key={f.key} className="personality-card">
-            <div className="pcard-label">{f.label}</div>
+          <div key={f.key} className="bg-(--bg-surface) border border-(--border) rounded-xl p-3 transition-all duration-150 focus-within:border-(--border-hi)">
+            <div className="text-[9px] font-bold uppercase tracking-widest text-(--text-3) mb-2">{f.label}</div>
             <textarea
-              className="pcard-text"
+              className="w-full bg-transparent border-none outline-none text-(--text-1) text-xs resize-none min-h-20 leading-relaxed"
               placeholder={f.placeholder}
               defaultValue={char.personality[f.key]}
               onChange={(e) => updateCharacter((c) => { c.personality[f.key] = e.target.value; })}

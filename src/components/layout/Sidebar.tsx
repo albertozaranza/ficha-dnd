@@ -12,7 +12,10 @@ interface SidebarProps {
 
 export function Sidebar({ onSave, onExport, onImport, onReset, onPrint }: SidebarProps) {
   return (
-    <aside id="sidebar">
+    <aside
+      id="sidebar"
+      className="w-[248px] flex-shrink-0 bg-[var(--bg-surface)] border-r border-[var(--border)] flex flex-col overflow-hidden"
+    >
       <SidebarHero />
       <SidebarNav />
       <SidebarFooter

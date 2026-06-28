@@ -12,11 +12,11 @@ export function XpBar({ level, xp }: XpBarProps) {
   const pct = isMax ? 100 : Math.min(100, ((xp - prev) / (next - prev)) * 100);
 
   return (
-    <div className="xp-section">
-      <div className="xp-bar">
-        <div className="xp-fill" style={{ width: `${pct}%` }} />
+    <div className="xp-section px-4 py-2.5 border-b border-(--border) shrink-0">
+      <div className="h-0.75 bg-(--bg-active) rounded-sm overflow-hidden mb-1">
+        <div className="h-full bg-(--accent) rounded-sm transition-[width] duration-500" style={{ width: `${pct}%` }} />
       </div>
-      <div className="xp-text">
+      <div className="flex justify-between text-[10px] text-(--text-3)">
         <span>{xp.toLocaleString()} XP</span>
         <span>{isMax ? "nível máximo" : next.toLocaleString() + " próx."}</span>
       </div>

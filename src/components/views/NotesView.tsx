@@ -16,12 +16,12 @@ export function NotesView() {
 
   return (
     <section id="view-notes" className="view">
-      <div className="view-header">
-        <h2 className="view-title">Notas</h2>
-        <span className="muted-hint">Salvo automaticamente</span>
+      <div className="flex items-center justify-between mb-7 pb-4 border-b border-(--border) flex-wrap gap-3">
+        <h2 className="font-cinzel text-[22px] font-bold text-(--text-1) tracking-[0.02em]">Notas</h2>
+        <span className="text-xs text-(--text-3)">Salvo automaticamente</span>
       </div>
       <textarea
-        className="notes-fullpage"
+        className="w-full min-h-[calc(100vh-160px)] bg-transparent border-none outline-none text-(--text-1) text-sm leading-[1.8] resize-none"
         placeholder="Suas notas de aventura, referências de regras, lembretes de sessão..."
         defaultValue={notes}
         onChange={handleChange}

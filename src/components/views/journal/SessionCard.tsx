@@ -5,9 +5,12 @@ import { EVENT_TAGS, TAG_COLOR } from "../../../lib/constants";
 import { EventTagChip } from "./EventTagChip";
 import type { Session, SessionEvent, EventTag } from "../../../types";
 
-interface EventsListProps {
-  session: Session;
-}
+const fieldInput = "bg-(--bg-elevated) border border-(--border) rounded-lg px-2 py-1.5 text-(--text-1) text-[13px] outline-none transition-all duration-150 focus:border-(--accent)";
+const btnBase = "px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-all duration-150 border";
+const btnSecondary = `${btnBase} bg-(--bg-elevated) text-(--text-2) border-(--border) hover:bg-(--bg-base)`;
+const btnDanger = `${btnBase} bg-(--red) text-white border-(--red) hover:opacity-90`;
+
+interface EventsListProps { session: Session; }
 
 function EventsList({ session }: EventsListProps) {
   const updateSession = useCampaignStore((s) => s.updateSession);
@@ -36,34 +39,37 @@ function EventsList({ session }: EventsListProps) {
   }
 
   return (
-    <div className="events-section">
-      <div className="events-section-label">Eventos</div>
-      <div className="events-list">
+    <div className="mt-1">
+      <div className="text-[11px] font-semibold uppercase tracking-[0.06em] text-(--text-3) mb-2">Eventos</div>
+      <div className="flex flex-col gap-1 mb-2">
         {(session.events ?? []).map((ev) => (
-          <div key={ev.id} className="event-item">
-            <div className="event-item-tags">
+          <div key={ev.id} className="flex items-center gap-1.5 px-2 py-1.25 bg-(--bg-elevated) rounded-lg text-[13px]">
+            <div className="flex gap-1 shrink-0">
               {ev.tags.map((t) => <EventTagChip key={t} tag={t} />)}
             </div>
-            <span className="event-item-text">{ev.text}</span>
-            <button className="event-remove-btn" aria-label="Remover evento" onClick={() => removeEvent(ev.id)}>×</button>
+            <span className="flex-1 text-(--text-1)">{ev.text}</span>
+            <button
+              className="bg-transparent border-none text-(--text-3) text-base cursor-pointer px-0.5 leading-none shrink-0 transition-all duration-150 hover:text-(--red)"
+              aria-label="Remover evento"
+              onClick={() => removeEvent(ev.id)}>×</button>
           </div>
         ))}
       </div>
-      <div className="add-event-row">
+      <div className="flex flex-col gap-1.5">
         <input
           type="text"
-          className="add-event-input"
+          className={`${fieldInput} w-full`}
           placeholder="Descreva o evento..."
           value={newText}
           onChange={(e) => setNewText(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") addEvent(); }}
         />
-        <div className="add-event-tag-bar">
+        <div className="flex gap-1 flex-wrap">
           {EVENT_TAGS.map((tag) => (
             <button
               key={tag}
               type="button"
-              className={`add-event-tag-btn${selectedTags.has(tag) ? " selected" : ""}`}
+              className={`add-event-tag-btn px-2.5 py-0.75 rounded-full border border-(--border) bg-(--bg-elevated) text-(--text-2) text-[11px] font-semibold cursor-pointer transition-all duration-150${selectedTags.has(tag) ? " selected" : ""}`}
               style={{ "--tag-color": TAG_COLOR[tag] } as React.CSSProperties}
               onClick={() => toggleTag(tag)}
             >
@@ -71,7 +77,7 @@ function EventsList({ session }: EventsListProps) {
             </button>
           ))}
         </div>
-        <button type="button" className="btn btn-secondary add-event-confirm-btn" onClick={addEvent}>
+        <button type="button" className={`${btnSecondary} self-start text-xs`} onClick={addEvent}>
           + Adicionar
         </button>
       </div>
@@ -79,9 +85,7 @@ function EventsList({ session }: EventsListProps) {
   );
 }
 
-interface SessionCardProps {
-  session: Session;
-}
+interface SessionCardProps { session: Session; }
 
 export function SessionCard({ session }: SessionCardProps) {
   const [expanded, setExpanded] = useState(false);
@@ -92,9 +96,7 @@ export function SessionCard({ session }: SessionCardProps) {
   const scheduleUpdate = useCallback((updater: (s: Session) => void) => {
     updater(session);
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      updateSession(session.id, updater);
-    }, 1000);
+    debounceRef.current = setTimeout(() => { updateSession(session.id, updater); }, 1000);
   }, [session, updateSession]);
 
   const tagCounts = (session.events ?? []).reduce<Partial<Record<EventTag, number>>>((acc, ev) => {
@@ -103,22 +105,22 @@ export function SessionCard({ session }: SessionCardProps) {
   }, {});
 
   return (
-    <div className="session-card">
-      <div className="session-card-header" onClick={() => setExpanded((v) => !v)}>
-        <span className="session-number">#{session.number}</span>
-        <span className="session-date-label">
+    <div className="bg-(--bg-surface) border border-(--border) rounded-xl p-3 mb-2.5 transition-all duration-150 hover:border-(--border-hi)">
+      <div className="flex gap-2 items-center cursor-pointer select-none pb-2" onClick={() => setExpanded((v) => !v)}>
+        <span className="font-bold min-w-8">#{session.number}</span>
+        <span className="text-(--text-3) text-xs min-w-22.5">
           {new Date(session.date + "T12:00:00").toLocaleDateString("pt-BR")}
         </span>
-        <span className="session-card-title">{session.title}</span>
-        <div className="session-card-meta">
-          {session.xp != null && <span className="session-badge badge-xp">+{session.xp} XP</span>}
-          {session.gold != null && <span className="session-badge badge-gold">+{session.gold} ouro</span>}
+        <span className="flex-1 font-semibold">{session.title}</span>
+        <div className="flex gap-1 items-center flex-wrap">
+          {session.xp != null && <span className="text-[11px] px-1.75 py-0.5 rounded-full font-semibold bg-[#7c6af722] text-[#7c6af7]">+{session.xp} XP</span>}
+          {session.gold != null && <span className="text-[11px] px-1.75 py-0.5 rounded-full font-semibold bg-[#f59e0b22] text-[#f59e0b]">+{session.gold} ouro</span>}
           {(Object.entries(tagCounts) as [EventTag, number][]).map(([t, n]) => (
             <EventTagChip key={t} tag={t} small count={n} />
           ))}
         </div>
         <svg
-          className="session-expand-icon"
+          className="opacity-60 shrink-0"
           width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
           style={{ transform: expanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
         >
@@ -127,60 +129,40 @@ export function SessionCard({ session }: SessionCardProps) {
       </div>
 
       {expanded && (
-        <div className="session-card-details">
-          <div className="session-inline-fields">
-            <input
-              className="session-date-input"
-              type="date"
+        <div className="border-t border-(--border) pt-2.5">
+          <div className="flex gap-2 mb-2 flex-wrap">
+            <input className={`${fieldInput} w-35`} type="date"
               defaultValue={session.date?.slice(0, 10) ?? ""}
-              onChange={(e) => scheduleUpdate((s) => { s.date = e.target.value; })}
-            />
-            <input
-              className="session-title-input"
-              placeholder="Título"
+              onChange={(e) => scheduleUpdate((s) => { s.date = e.target.value; })} />
+            <input className={`${fieldInput} flex-1`} placeholder="Título"
               defaultValue={session.title}
-              onChange={(e) => scheduleUpdate((s) => { s.title = e.target.value; })}
-            />
-            <input
-              className="session-xp-input"
-              type="number"
-              placeholder="XP"
+              onChange={(e) => scheduleUpdate((s) => { s.title = e.target.value; })} />
+            <input className={`${fieldInput} w-20`} type="number" placeholder="XP"
               defaultValue={session.xp ?? ""}
-              onChange={(e) => scheduleUpdate((s) => { s.xp = e.target.value ? parseInt(e.target.value) : undefined; })}
-            />
-            <input
-              className="session-gold-input"
-              type="number"
-              placeholder="Ouro"
+              onChange={(e) => scheduleUpdate((s) => { s.xp = e.target.value ? parseInt(e.target.value) : undefined; })} />
+            <input className={`${fieldInput} w-22.5`} type="number" placeholder="Ouro"
               defaultValue={session.gold ?? ""}
-              onChange={(e) => scheduleUpdate((s) => { s.gold = e.target.value ? parseInt(e.target.value) : undefined; })}
-            />
+              onChange={(e) => scheduleUpdate((s) => { s.gold = e.target.value ? parseInt(e.target.value) : undefined; })} />
           </div>
           <textarea
-            className="session-summary-input"
+            className={`${fieldInput} w-full h-20 resize-none mb-2`}
             placeholder="Resumo..."
             defaultValue={session.summary}
             onChange={(e) => scheduleUpdate((s) => { s.summary = e.target.value; })}
           />
-          <div className="session-participants-row">
+          <div className="flex gap-2 items-center mb-3">
             <input
-              className="session-participants-input"
+              className={`${fieldInput} flex-1`}
               placeholder="Participantes (separados por vírgula)"
               defaultValue={(session.participants ?? []).join(", ")}
               onChange={(e) => scheduleUpdate((s) => {
                 s.participants = e.target.value.split(",").map((p) => p.trim()).filter(Boolean);
               })}
             />
-            <button
-              className="session-edit-btn btn btn-secondary"
-              onClick={(e) => { e.stopPropagation(); setOpenModal("session", session.id); }}
-            >
+            <button className={btnSecondary} onClick={(e) => { e.stopPropagation(); setOpenModal("session", session.id); }}>
               Editar
             </button>
-            <button
-              className="session-del-btn btn btn-danger"
-              onClick={(e) => { e.stopPropagation(); setOpenModal("delete", session.id); }}
-            >
+            <button className={btnDanger} onClick={(e) => { e.stopPropagation(); setOpenModal("delete", session.id); }}>
               Excluir
             </button>
           </div>

@@ -6,11 +6,15 @@ export function SidebarNav() {
   const setActiveView = useUIStore((s) => s.setActiveView);
 
   return (
-    <nav className="sidebar-nav" aria-label="Navegação principal">
+    <nav className="sidebar-nav flex-1 p-2 flex flex-col gap-0.5 overflow-y-auto" aria-label="Navegação principal">
       {NAV_ITEMS.map((item) => (
         <button
           key={item.id}
-          className={`nav-btn${activeView === item.id ? " active" : ""}`}
+          className={`nav-btn flex items-center gap-2 w-full px-2.5 py-2 rounded-lg border-none text-[13px] font-medium cursor-pointer text-left transition-[background,color] duration-150 [&_svg]:shrink-0 ${
+            activeView === item.id
+              ? "bg-(--accent-sub) text-(--accent) [&_svg]:opacity-100"
+              : "bg-transparent text-(--text-2) hover:bg-(--bg-hover) hover:text-(--text-1) [&_svg]:opacity-60"
+          }`}
           data-view={item.id}
           onClick={() => setActiveView(item.id)}
         >
