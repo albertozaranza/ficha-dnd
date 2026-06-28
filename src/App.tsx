@@ -1,17 +1,24 @@
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useAutoSave } from "./hooks/useAutoSave";
 import { useUIStore } from "./store/uiStore";
 import { useCampaignStore } from "./store/campaignStore";
 import { Storage } from "./storage";
 import { Sidebar } from "./components/layout/Sidebar";
+import { OverviewView } from "./components/views/OverviewView";
+import { CombatView } from "./components/views/CombatView";
+import { SkillsView } from "./components/views/SkillsView";
+import { EquipmentView } from "./components/views/EquipmentView";
+import { FeaturesView } from "./components/views/FeaturesView";
+import { SpellsView } from "./components/views/SpellsView";
+import { CharacterView } from "./components/views/CharacterView";
+import { NotesView } from "./components/views/NotesView";
 import {
   initViewsVanilla,
-  initKeyboardVanilla,
   saveNow,
   exportNow,
   importNow,
   resetNow,
-  renderAll,
 } from "./main";
 
 export default function App() {
@@ -37,9 +44,29 @@ export default function App() {
     document.getElementById(`view-${activeView}`)?.classList.add("active");
   }, [activeView]);
 
-  // Boot vanilla view rendering once on mount
+  // Boot vanilla Journal rendering once on mount
   useEffect(() => {
     initViewsVanilla();
+  }, []);
+
+  // Portrait upload: update Zustand store when file is selected
+  useEffect(() => {
+    const input = document.getElementById("portrait-upload") as HTMLInputElement | null;
+    if (!input) return;
+    function onFileChange(e: Event) {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const result = ev.target?.result;
+        if (typeof result !== "string") return;
+        useCampaignStore.getState().updateCharacter((c) => { c.appearance.portrait = result; });
+      };
+      reader.readAsDataURL(file);
+      (e.target as HTMLInputElement).value = "";
+    }
+    input.addEventListener("change", onFileChange);
+    return () => input.removeEventListener("change", onFileChange);
   }, []);
 
   // Keyboard shortcuts
@@ -82,26 +109,40 @@ export default function App() {
 
   async function handleImport(file: File) {
     await importNow(file);
-    const loaded = Storage.load();
-    importCampaign(loaded);
-    renderAll();
+    importCampaign(Storage.load());
   }
 
   function handleReset() {
     if (!confirm("Resetar para os dados originais? Todas as alterações serão perdidas.")) return;
     resetNow();
-    const loaded = Storage.load();
     resetCampaign();
-    importCampaign(loaded);
+    importCampaign(Storage.load());
   }
 
+  const mainEl = document.getElementById("main");
+
   return (
-    <Sidebar
-      onSave={handleSave}
-      onExport={handleExport}
-      onImport={handleImport}
-      onReset={handleReset}
-      onPrint={() => window.print()}
-    />
+    <>
+      <Sidebar
+        onSave={handleSave}
+        onExport={handleExport}
+        onImport={handleImport}
+        onReset={handleReset}
+        onPrint={() => window.print()}
+      />
+      {mainEl && createPortal(
+        <>
+          <OverviewView />
+          <CombatView />
+          <SkillsView />
+          <EquipmentView />
+          <FeaturesView />
+          <SpellsView />
+          <CharacterView />
+          <NotesView />
+        </>,
+        mainEl
+      )}
+    </>
   );
 }
