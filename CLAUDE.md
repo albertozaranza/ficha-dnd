@@ -14,10 +14,13 @@ Roadmap de versões em `.claude/architecture/vision.md`. Specs de cada módulo e
 
 # Comandos
 
+**Gerenciador de pacotes: `yarn` — nunca usar `npm install`.**
+
 ```bash
-npm run dev      # dev server em http://127.0.0.1:5173
-npm run build    # tsc + vite build (produção)
-npm run preview  # preview do build de produção
+yarn dev        # dev server em http://127.0.0.1:5173
+yarn build      # tsc + vite build (produção)
+yarn preview    # preview do build de produção
+yarn add <pkg>  # instalar dependência
 ```
 
 Sem testes automatizados. Validação é manual via browser.
