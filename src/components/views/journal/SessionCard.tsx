@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from "react";
+import ReactMarkdown from "react-markdown";
 import { useCampaignStore } from "../../../store/campaignStore";
 import { useUIStore } from "../../../store/uiStore";
 import { EVENT_TAGS, TAG_COLOR } from "../../../lib/constants";
@@ -89,6 +90,7 @@ interface SessionCardProps { session: Session; }
 
 export function SessionCard({ session }: SessionCardProps) {
   const [expanded, setExpanded] = useState(false);
+  const [editingSummary, setEditingSummary] = useState(false);
   const updateSession = useCampaignStore((s) => s.updateSession);
   const { setOpenModal } = useUIStore();
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -143,12 +145,45 @@ export function SessionCard({ session }: SessionCardProps) {
               defaultValue={session.gold ?? ""}
               onChange={(e) => scheduleUpdate((s) => { s.gold = e.target.value ? parseInt(e.target.value) : undefined; })} />
           </div>
-          <textarea
-            className={`${fieldInput} w-full h-20 resize-none mb-2`}
-            placeholder="Resumo..."
-            defaultValue={session.summary}
-            onChange={(e) => scheduleUpdate((s) => { s.summary = e.target.value; })}
-          />
+          {editingSummary ? (
+            <textarea
+              autoFocus
+              className={`${fieldInput} w-full h-36 resize-none mb-2`}
+              placeholder="Resumo... (suporta markdown)"
+              defaultValue={session.summary}
+              onChange={(e) => scheduleUpdate((s) => { s.summary = e.target.value; })}
+              onBlur={() => setEditingSummary(false)}
+            />
+          ) : (
+            <div
+              className="w-full min-h-9 mb-2 px-2 py-1.5 rounded-lg border border-(--border) bg-(--bg-elevated) text-[13px] text-(--text-2) cursor-text transition-all duration-150 hover:border-(--accent) prose-sm"
+              onClick={() => setEditingSummary(true)}
+              title="Clique para editar"
+            >
+              {session.summary ? (
+                <ReactMarkdown
+                  components={{
+                    p: ({ children }) => <p className="m-0 mb-1 last:mb-0">{children}</p>,
+                    strong: ({ children }) => <strong className="text-(--text-1) font-semibold">{children}</strong>,
+                    em: ({ children }) => <em className="text-(--text-2)">{children}</em>,
+                    ul: ({ children }) => <ul className="list-disc pl-4 my-1">{children}</ul>,
+                    ol: ({ children }) => <ol className="list-decimal pl-4 my-1">{children}</ol>,
+                    li: ({ children }) => <li className="mb-0.5">{children}</li>,
+                    h1: ({ children }) => <h1 className="text-base font-bold text-(--text-1) mt-1 mb-0.5">{children}</h1>,
+                    h2: ({ children }) => <h2 className="text-[13px] font-bold text-(--text-1) mt-1 mb-0.5">{children}</h2>,
+                    h3: ({ children }) => <h3 className="text-[13px] font-semibold text-(--text-1) mt-1 mb-0.5">{children}</h3>,
+                    code: ({ children }) => <code className="bg-(--bg-base) px-1 py-0.5 rounded text-[12px] font-mono text-(--accent)">{children}</code>,
+                    blockquote: ({ children }) => <blockquote className="border-l-2 border-(--accent) pl-2 my-1 text-(--text-3) italic">{children}</blockquote>,
+                    hr: () => <hr className="border-(--border) my-1" />,
+                  }}
+                >
+                  {session.summary}
+                </ReactMarkdown>
+              ) : (
+                <span className="text-(--text-3) italic">Resumo... (clique para editar)</span>
+              )}
+            </div>
+          )}
           <div className="flex gap-2 items-center mb-3">
             <input
               className={`${fieldInput} flex-1`}
